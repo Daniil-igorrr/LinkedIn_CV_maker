@@ -48,4 +48,6 @@ The controller:
 - moves exactly the current source file;
 - advances the next pending file or closes the batch.
 
-If `complete` returns an error, STOP. Do not modify `inbox/processed/` or the current source to resolve an error. The controller error is the final state until an explicit recovery step is provided.\n\nThere is no wildcard move operation in the supported workflow.
+If `complete` returns an error, STOP. Do not modify `inbox/processed/` or the current source to resolve an error. The controller error is the final state until an explicit recovery step is provided.
+
+There is no wildcard move operation in the supported workflow.
