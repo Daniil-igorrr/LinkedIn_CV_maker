@@ -8,7 +8,7 @@ If the user asks to process everything in `inbox/`, the agent MUST use the deter
 
 Start:
 ```bash
-python scripts/batch_controller.py prepare
+python3 scripts/batch_controller.py prepare
 ```
 
 The controller:
@@ -20,7 +20,7 @@ The controller:
 
 Before each job, obtain the current filename:
 ```bash
-python scripts/batch_controller.py current
+python3 scripts/batch_controller.py current
 ```
 
 ### Job isolation
@@ -30,7 +30,8 @@ Do NOT:
 - inspect or process other pending files;
 - choose another file;
 - manage batch state manually;
-- move or rename inbox files;
+- move, rename, copy, delete, or recreate files in `inbox/` or `inbox/processed/`;
+- use `Move-Item`, `mv`, `cp`, `rm`, `Remove-Item`, `del`, `unlink`, or equivalent filesystem operations on batch input/processed files;
 - use wildcard filesystem operations;
 - write to `output/execution_log.md`.
 
@@ -38,10 +39,10 @@ The agent may create the current job's outputs and one temporary execution recor
 
 After the current job is finished:
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
-The controller verifies the source hash, appends the record to `output/execution_log.md`, moves **exactly that file** to `inbox/processed/`, and advances the next pending job.
+If `complete` returns **any error**, **STOP immediately**. Do not attempt to repair the filesystem, remove an existing destination, move the source manually, rerun with another filename, or otherwise bypass the controller. Report the exact error and wait for recovery instructions.\n\nThe controller verifies the source hash, appends the record to `output/execution_log.md`, moves **exactly that file** to `inbox/processed/`, and advances the next pending job.
 
 If rule hashes changed, the controller stops the batch.
 
