@@ -38,7 +38,7 @@ For a SKIP job, all non-applicable checks are `N/A (skipped)`, as defined by the
 2. Write exactly one temporary record under `.batch/records/`.
 3. Run:
 ```bash
-python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 The controller:
