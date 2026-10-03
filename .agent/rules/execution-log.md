@@ -38,7 +38,7 @@ For a SKIP job, all non-applicable checks are `N/A (skipped)`, as defined by the
 2. Write exactly one temporary record under `.batch/records/`.
 3. Run:
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 The controller:
@@ -48,4 +48,4 @@ The controller:
 - moves exactly the current source file;
 - advances the next pending file or closes the batch.
 
-There is no wildcard move operation in the supported workflow.
+If `complete` returns an error, STOP. Do not modify `inbox/processed/` or the current source to resolve an error. The controller error is the final state until an explicit recovery step is provided.\n\nThere is no wildcard move operation in the supported workflow.
