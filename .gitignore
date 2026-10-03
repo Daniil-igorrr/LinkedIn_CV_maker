@@ -39,3 +39,7 @@ token.json
 .vscode/
 .DS_Store
 Thumbs.db
+
+# Runtime state for the deterministic batch controller
+.batch/*
+!.batch/.gitkeep
