@@ -205,7 +205,9 @@ def complete(filename: str, record_file: str | None) -> None:
     PROCESSED.mkdir(parents=True, exist_ok=True)
     destination = PROCESSED / filename
     if destination.exists():
-        fail(f"Processed destination already exists: {destination}")
+        # Filenames can legitimately repeat across batches. Preserve the
+        # previous processed file and give this batch a collision-safe name.
+        destination = PROCESSED / f"{manifest["batch_id"]}__{filename}"
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     log = OUTPUT / "execution_log.md"
