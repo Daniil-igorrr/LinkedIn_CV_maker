@@ -1,84 +1,90 @@
 # Workflow — Step-by-Step Task Execution
 
-This document outlines the mandatory step-by-step procedure the agent follows whenever a new job description is submitted (either as a file in `inbox/` or pasted directly into chat).
+This document defines the mandatory workflow for a new job description and the deterministic batch protocol.
 
-## Step 0 (before Step 1): Batch Mode
+## Step 0 — Batch Mode
 
-If the user asks to process everything in inbox/, switch to batch mode.
+If the user asks to process everything in `inbox/`, the agent MUST use the deterministic controller.
 
-Hard limit: process at most 5 files per batch run. If more than 5 files are present in inbox/, process only the first 5 (alphabetically), move them to inbox/processed/, and tell the user how many remain for the next run. Do not exceed this limit even if asked — if the user wants more processed, they run the batch command again.
+Start:
+```bash
+python scripts/batch_controller.py prepare
+```
 
-For EACH file in the batch (not once at the start of the whole batch):
+The controller:
+- selects at most 5 `.txt` files alphabetically;
+- freezes the selected filenames and source hashes in `.batch/manifest.json`;
+- freezes SHA-256 hashes of all mandatory rule files;
+- marks exactly one file as `in_progress`;
+- does not include later files added to `inbox/`.
 
-Re-read .agent/rules/domain-fit-gate.md, .agent/rules/anti-hallucination.md, .agent/rules/output-format.md, and .agent/rules/pdf-page-limit.md fresh from disk, even if you already read them for a previous file in this same batch run. Do not rely on what you recall from earlier in this session.
-Run the full pipeline (domain-fit-gate → anti-hallucination → workflow Steps 1-5) for this one file.
-Append a structured entry to output/execution_log.md per .agent/rules/execution-log.md BEFORE moving to the next file.
+Before each job, obtain the current filename:
+```bash
+python scripts/batch_controller.py current
+```
 
-After all files in this batch are processed, present ONE consolidated report (same format as before — Skipped / Generated sections), and move the processed files to inbox/processed/.
+### Job isolation
+Process **ONLY** the filename returned by `current`.
 
----
+Do NOT:
+- inspect or process other pending files;
+- choose another file;
+- manage batch state manually;
+- move or rename inbox files;
+- use wildcard filesystem operations;
+- write to `output/execution_log.md`.
+
+The agent may create the current job's outputs and one temporary execution record under `.batch/records/`.
+
+After the current job is finished:
+```bash
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+```
+
+The controller verifies the source hash, appends the record to `output/execution_log.md`, moves **exactly that file** to `inbox/processed/`, and advances the next pending job.
+
+If rule hashes changed, the controller stops the batch.
+
+A consolidated report may be presented only after the controller reports `Batch complete.`
 
 ## Step 1: Ingestion & Job Analysis
-1. Read the complete job description carefully.
-2. Extract and structure the following metadata:
-   - **Company Name**
-   - **Target Role / Title**
-   - **Core Requirements & Responsibilities**
-   - **Preferred Tech Stack / Tools**
-   - **Key Industry Keywords**
-
----
+1. Read the complete current job description.
+2. Extract Company Name, Target Role / Title, Core Requirements & Responsibilities, Preferred Tech Stack / Tools, and Key Industry Keywords.
 
 ## Step 2: Cross-Referencing with `master-profile.md`
 1. Read `master-profile.md`.
-2. Compare each extracted job requirement against the facts in `master-profile.md`:
-   - Identify direct matches (skills, tools, achievements, languages).
-   - Identify transferable/adjacent matches strictly rooted in existing facts.
-   - Identify unfulfilled requirements (gaps).
-
----
+2. Compare each extracted requirement against verified profile facts.
+3. Identify direct matches, strictly grounded transferable matches, and gaps.
 
 ## Step 3: Resume Generation
 1. Load `templates/resume-template.md`.
-2. Populate the template strictly following the fixed section order:
-   - **Header / Contact Information:** Taken verbatim from `master-profile.md`.
-   - **Professional Summary:** 2–3 concise sentences tailored to the role using only verified facts.
-   - **Experience:** Prioritize and reorder bullet points from the CLG Project entry to emphasize the most relevant achievements for this role.
-   - **Skills:** Group and highlight matching tools and skills from the profile.
-   - **Education:** Degree and schedule details from `master-profile.md`.
-   - **Availability & Work Authorization:** Verified availability and location preferences.
-3. Ensure length fits within 1 standard A4 page.
-4. Perform the self-verification checklist from `.agent/rules/anti-hallucination.md`.
-
----
+2. Populate it strictly from verified facts.
+3. Keep the CV within 1 standard A4 page.
+4. Run the anti-hallucination checklist before saving.
 
 ## Step 4: Cover Letter Generation
 1. Load `templates/cover-letter-template.md`.
-2. Draft a targeted cover letter:
-   - **Length:** Strictly 150–200 words.
-   - **Content:** Include 2–3 concrete, verified achievements/metrics from `master-profile.md` that address the employer's key pain points.
-   - **Tone:** Confident, direct, factual, and free of fluff.
-3. Perform the self-verification checklist from `.agent/rules/anti-hallucination.md`.
-
----
+2. Draft 150–200 words using only verified facts.
+3. Run the anti-hallucination checklist before saving.
 
 ## Step 5: Saving Output Files
-Save the resulting markdown documents into the `output/` directory with clean, standardized filenames:
+Save:
 - `output/{Company}_{Role}_CV.md`
 - `output/{Company}_{Role}_CoverLetter.md`
 
-*(Note: Replace spaces and special characters with underscores if needed, e.g., `output/Stripe_SDR_CV.md`)*
+For a SKIP decision, do not generate CV/CL.
 
----
+## Step 6: Execution Record
+For every job, create one temporary record:
+```text
+.batch/records/<current-job-safe-name>.record.md
+```
+The record must follow `.agent/rules/execution-log.md`.
 
-## Step 6: Presenting Response & Gap Report
-In the chat output to the user:
-1. Provide clickable links to the newly generated CV and Cover Letter in `output/`.
-2. Present a **Gap Report** listing any job requirements or preferred qualifications from the job posting that are **not** covered by `master-profile.md`.
-3. If any ambiguous points were encountered, highlight them for user clarification.
+Never create or overwrite `output/execution_log.md` directly.
 
----
+## Step 7: Presenting Response & Gap Report
+Provide links to generated outputs and the Gap Report. For skipped jobs, provide the exact documented reason.
 
-## Step 7: Application Boundaries
-> [!NOTE]
-> The agent only prepares tailored documents and analysis. The agent **NEVER** sends emails, submits online applications, or contacts recruiters automatically. All submission decisions and actions are handled exclusively by the user.
+## Step 8: Application Boundaries
+The agent only prepares tailored documents and analysis. It NEVER sends emails, submits applications, or contacts recruiters automatically.
