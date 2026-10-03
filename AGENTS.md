@@ -36,6 +36,9 @@ Before processing any task, the agent **MUST** read and adhere to:
 The agent is **not** the batch controller.
 
 The agent MUST NOT:
+- create new scripts, helper programs, or replacement tooling to work around a missing repository tool;
+- install Python packages, Node packages, system packages, or other dependencies during job processing;
+- modify existing scripts, controller code, rule files, templates, or project configuration while processing a job;
 - discover or select the batch files;
 - choose a different file from the controller-provided CURRENT JOB;
 - inspect other pending batch files;
@@ -49,6 +52,19 @@ The agent MUST NOT:
 **Error handling is also part of this boundary:** if `batch_controller.py complete` returns an error, STOP. Do not delete, move, rename, recreate, or otherwise manipulate the source or destination file to make `complete` succeed. Report the exact controller error and wait for recovery instructions.
 
 The controller exclusively owns batch state, exact file movement, rule-lock verification, and append-only execution-log writes.
+
+### Full-batch execution mode
+When the user asks to continue/process the current batch, the agent MUST run the batch continuously until the controller reports `Batch complete.`.
+
+The required loop is:
+1. Run `python scripts/batch_controller.py current`.
+2. Process ONLY the returned CURRENT JOB.
+3. Write the current job's temporary execution record.
+4. Run `python scripts/batch_controller.py complete ...`.
+5. If `complete` succeeds and prints `Next:`, immediately return to step 1 without waiting for another user message.
+6. Stop only when the controller prints `Batch complete.`, or when a controller/infrastructure error requires a stop.
+
+The agent must NOT interpret the end of one job as the end of the batch. A successful `complete` with a `Next:` line is an explicit instruction to continue.
 
 ---
 
