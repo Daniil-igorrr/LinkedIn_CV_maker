@@ -1,46 +1,56 @@
 # LinkedIn CV Maker & BDR Application Assistant
 
-Ассистент на базе ИИ, специализирующийся на подготовке адаптированных резюме (CV) и сопроводительных писем для позиций **SDR / BDR / Lead Generation** на основе описаний вакансий, а также включающий скрипты интеграции с Google Calendar для планирования собеседований.
+Ассистент на базе ИИ для подготовки адаптированных CV и cover letters для SDR / BDR / Lead Generation позиций на основе описаний вакансий.
 
 ## Структура проекта
 
-* `AGENTS.md` — Инструкции и правила для AI-агента (SDR/BDR Application Assistant).
-* `master-profile.md` — Единый источник правды (Single Source of Truth) о кандидате (опыт, метрики, навыки).
-* `inbox/` — Директория для входящих сырых описаний вакансий.
-* `output/` — Директория для сгенерированных резюме и сопроводительных писем (формат `{Company}_{Role}_CV.md`).
-* `templates/` — Шаблоны форматирования и визуальные референсы для генерации.
-* `calendar_auth_setup.py` — Скрипт для первичной настройки аутентификации Google API.
-* `create_calendar_event.py` — Скрипт для создания событий в Google Calendar.
+- `AGENTS.md` — правила AI-агента.
+- `master-profile.md` — единственный источник фактов о кандидате.
+- `inbox/` — входящие вакансии.
+- `output/` — сгенерированные материалы и append-only execution log.
+- `templates/` — шаблоны.
+- `scripts/batch_controller.py` — детерминированный контроллер batch state.
 
-## Требования
+## Batch Mode
 
-Для запуска скриптов интеграции с календарем требуется **Python 3.x**.
+Для нескольких вакансий **не передавайте управление batch state самому LLM**. Используйте controller:
 
-Установка зависимостей:
 ```bash
-pip install -r requirements.txt
+python scripts/batch_controller.py prepare
+python scripts/batch_controller.py current
 ```
 
-## Использование
+Контроллер фиксирует максимум 5 файлов в `.batch/manifest.json`, сохраняет SHA-256 правил и исходных файлов и выдаёт ровно один CURRENT JOB.
 
-### Генерация Резюме
-Проект использует AI-агентов. Все инструкции и строгие правила описаны в файле `AGENTS.md`. Агенту строго запрещено галлюцинировать и выдумывать факты, которых нет в `master-profile.md`. 
-1. Поместите описание вакансии в папку `inbox/` или отправьте текстом.
-2. Инициируйте работу агента для генерации файлов в `output/`.
+После обработки текущей вакансии агент создаёт временный execution record:
 
-### Google Календарь
-Для использования скриптов Google Calendar необходим файл `credentials.json` из Google Cloud Console (добавлен в `.gitignore` для безопасности).
+```text
+.batch/records/<job>.record.md
+```
 
-1. Поместите ваш `credentials.json` в корень проекта.
-2. Запустите скрипт настройки авторизации:
-   ```bash
-   python calendar_auth_setup.py
-   ```
-   (Будет сгенерирован `token.json` для последующих запросов).
-3. Используйте `create_calendar_event.py` для добавления событий:
-   ```bash
-   python create_calendar_event.py
-   ```
+Затем:
 
-## Стандарты разработки
-В проекте действует принцип строгой фактической точности (Zero Hallucination Policy). Любые изменения в профиле кандидата должны осуществляться только через обновление `master-profile.md`.
+```bash
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<job>.record.md"
+```
+
+Controller сам:
+- проверяет неизменность правил и входного файла;
+- добавляет запись в `output/execution_log.md`;
+- перемещает только конкретный текущий файл в `inbox/processed/`;
+- переводит следующий job в `in_progress`;
+- закрывает batch после последнего job.
+
+### Важное ограничение
+
+AI-агент не должен использовать `Move-Item inbox\\*.txt`, `inbox/*`, `*.txt` или любые другие wildcard-операции для перемещения/удаления входных файлов. Он также не должен напрямую изменять `output/execution_log.md`.
+
+## Генерация CV
+
+1. Поместите описание вакансии в `inbox/`.
+2. Для одной вакансии агент может обработать только указанный файл.
+3. Для batch используйте controller и workflow из `AGENTS.md` и `.agent/rules/workflow.md`.
+
+## Google Calendar
+
+Для календарных скриптов требуется Python 3.x и `credentials.json`, который находится в `.gitignore`.
