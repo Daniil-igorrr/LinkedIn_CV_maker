@@ -40,10 +40,13 @@ The agent MUST NOT:
 - choose a different file from the controller-provided CURRENT JOB;
 - inspect other pending batch files;
 - create or modify `.batch/manifest.json` or `.batch/batch.lock`;
-- move, rename, delete, or bulk-process files in `inbox/`;
+- move, rename, delete, or bulk-process files in `inbox/` or `inbox/processed/`;
+- use `Move-Item`, `mv`, `cp`, `rm`, `Remove-Item`, `del`, `unlink`, or equivalent filesystem mutation against batch input/processed files;
 - use wildcard file movement such as `*.txt`, `*.*`, `inbox/*`, or `inbox\\*`;
 - modify `output/execution_log.md` directly;
 - claim a batch is complete based only on its own chat summary.
+
+**Error handling is also part of this boundary:** if `batch_controller.py complete` returns an error, STOP. Do not delete, move, rename, recreate, or otherwise manipulate the source or destination file to make `complete` succeed. Report the exact controller error and wait for recovery instructions.
 
 The controller exclusively owns batch state, exact file movement, rule-lock verification, and append-only execution-log writes.
 
@@ -62,17 +65,22 @@ The controller exclusively owns batch state, exact file movement, rule-lock veri
 ### Controller commands
 Start a batch with:
 ```bash
-python scripts/batch_controller.py prepare
+python3 scripts/batch_controller.py prepare
 ```
 
 Get the only allowed current job with:
 ```bash
-python scripts/batch_controller.py current
+python3 scripts/batch_controller.py current
 ```
 
 After the current job is fully processed and its temporary execution record is written:
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
-Do not call `complete` for another file. Do not manually move files.
+Do not call `complete` for another file. Do not manually move or delete batch files.
+
+`complete` is the only supported transition from a finished job to the next job.
+`current` is the only supported source of truth for which job is active.
+`list` is for status inspection only; it does not change state.
+`abort` stops the batch without moving input files.
