@@ -16,8 +16,8 @@
 Для нескольких вакансий **не передавайте управление batch state самому LLM**. Используйте controller:
 
 ```bash
-python scripts/batch_controller.py prepare
-python scripts/batch_controller.py current
+python3 scripts/batch_controller.py prepare
+python3 scripts/batch_controller.py current
 ```
 
 Контроллер фиксирует максимум 5 файлов в `.batch/manifest.json`, сохраняет SHA-256 правил и исходных файлов и выдаёт ровно один CURRENT JOB.
@@ -31,7 +31,7 @@ python scripts/batch_controller.py current
 Затем:
 
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<job>.record.md"
+python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<job>.record.md"
 ```
 
 Controller сам:
@@ -43,7 +43,7 @@ Controller сам:
 
 ### Важное ограничение
 
-AI-агент не должен использовать `Move-Item inbox\\*.txt`, `inbox/*`, `*.txt` или любые другие wildcard-операции для перемещения/удаления входных файлов. Он также не должен напрямую изменять `output/execution_log.md`.
+AI-агент не должен использовать `Move-Item inbox\\*.txt`, `inbox/*`, `*.txt` или любые другие wildcard-операции для перемещения/удаления входных файлов.\n\n**Запрещены любые ручные filesystem-операции над batch input/processed files**, включая `Move-Item`, `mv`, `cp`, `rm`, `Remove-Item`, `del`, `unlink` и эквиваленты.\n\nЕсли `batch_controller.py complete` возвращает ошибку, агент обязан остановиться и сообщить точный текст ошибки. Он не должен удалять существующий destination, перемещать source вручную или иным способом обходить controller.
 
 ## Генерация CV
 
