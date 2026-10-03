@@ -43,7 +43,11 @@ Controller сам:
 
 ### Важное ограничение
 
-AI-агент не должен использовать `Move-Item inbox\\*.txt`, `inbox/*`, `*.txt` или любые другие wildcard-операции для перемещения/удаления входных файлов.\n\n**Запрещены любые ручные filesystem-операции над batch input/processed files**, включая `Move-Item`, `mv`, `cp`, `rm`, `Remove-Item`, `del`, `unlink` и эквиваленты.\n\nЕсли `batch_controller.py complete` возвращает ошибку, агент обязан остановиться и сообщить точный текст ошибки. Он не должен удалять существующий destination, перемещать source вручную или иным способом обходить controller.
+AI-агент не должен использовать `Move-Item inbox\\*.txt`, `inbox/*`, `*.txt` или любые другие wildcard-операции для перемещения/удаления входных файлов.
+
+**Запрещены любые ручные filesystem-операции над batch input/processed files**, включая `Move-Item`, `mv`, `cp`, `rm`, `Remove-Item`, `del`, `unlink` и эквиваленты.
+
+Если `batch_controller.py complete` возвращает ошибку, агент обязан остановиться и сообщить точный текст ошибки. Он не должен удалять существующий destination, перемещать source вручную или иным способом обходить controller.
 
 ## Генерация CV
 
