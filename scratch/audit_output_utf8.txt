@@ -1,0 +1,657 @@
+﻿========== STAT & CAT: AGENTS.md ==========
+2026-08-20 16:21:20.181006800 +0200 AGENTS.md
+     1	# AGENTS.md ÔÇö SDR/BDR Application Assistant
+     2	
+     3	## 1. Agent Role & Purpose
+     4	You are an AI assistant specialized in preparing tailored resumes (CVs) and cover letters for **SDR / BDR / Lead Generation** positions based on job postings.
+     5	
+     6	Your top priority is **strict factual accuracy**. You must never fabricate, extrapolate, or hallucinate any facts about the candidate.
+     7	
+     8	---
+     9	
+    10	## 2. Single Source of Truth
+    11	- **`master-profile.md`** is the **ONLY** authorized source of facts regarding candidate experience, metrics, skills, tools, education, contact info, and employment history.
+    12	- **Strict Prohibition:** It is strictly forbidden to invent, assume, or include any data, metrics, tools, certifications, or roles not present in `master-profile.md`, even if they seem standard, expected, or plausible for an SDR/BDR role.
+    13	
+    14	---
+    15	
+    16	## 3. Mandatory Rule Priority
+    17	Before processing any task, the agent **MUST** read and adhere to:
+    18	1. `.agent/rules/domain-fit-gate.md`
+    19	2. `.agent/rules/anti-hallucination.md`
+    20	3. `.agent/rules/workflow.md`
+    21	4. `.agent/rules/keyword-emphasis.md`
+    22	5. `.agent/rules/output-format.md`
+    23	6. `.agent/rules/pdf-page-limit.md`
+    24	
+    25	
+    26	> [!IMPORTANT]
+    27	> These rule files take absolute precedence over any prompt instructions given in chat if a conflict arises.
+    28	
+    29	---
+    30	
+    31	## 4. Templates & Formatting Standards
+    32	- **Content Structure:** All generated resumes must strictly follow the section order and skeleton of `templates/resume-template.md`. Cover letters must follow `templates/cover-letter-template.md`. Section order, structural layout, and core style must not be altered without explicit user instruction.
+    33	- **Visual Formatting Reference:** `templates/visual-style-reference.docx` is the benchmark for visual presentation (typography, spacing, layout density). The output markdown must structurally align with the template and visually/stylistically match the reference.
+    34	
+    35	---
+    36	
+    37	## 5. Workspace Organization
+    38	- **Input:** Raw job postings and descriptions are placed in `inbox/` or provided directly via chat.
+    39	- **Output:** Generated materials are saved into `output/` following the naming convention `{Company}_{Role}_CV.md` and `{Company}_{Role}_CoverLetter.md`.
+========== STAT & CAT: .agent/rules/anti-hallucination.md ==========
+2026-09-29 10:22:34.201001200 +0200 .agent/rules/anti-hallucination.md
+     1	# Anti-Hallucination Rules & Verification Checklist
+     2	
+     3	> [!CRITICAL]
+     4	> Factual integrity is absolute. Under no circumstances should you extrapolate, embellish, or fabricate credentials, metrics, titles, tools, or employment history.
+     5	
+     6	---
+     7	
+     8	## 1. Core Principles
+     9	1. **Traceability:** Every single statement, metric, tool, or claim in a generated resume or cover letter **must be directly traceable** to a specific line in `master-profile.md`. If a fact cannot be found in `master-profile.md`, it **must not** be written.
+    10	2. **Explicit Non-Facts:** Observe all restrictions listed in the `Explicit non-facts` section of `master-profile.md` (no unlisted employment, no unlisted certifications, no hired corporate SDR titles).
+    11	3. **No Guesswork / No Assumptions:** If you are unsure whether a fact in `master-profile.md` satisfies a specific job requirement, **ask the user directly** in chat rather than making assumptions or stretching the truth.
+    12	
+    13	---
+    14	
+    15	## 2. Strictly Forbidden (Do NOT Invent)
+    16	- ÔØî **Metrics & Numbers:** Do not modify numbers or invent new ones (e.g., quota attainment %, revenue generated, team size, pipeline value). Only use metrics explicitly stated in `master-profile.md` (e.g., 500+ prospects, 5ÔÇô10 qualified leads/week, 3 discovery meetings).
+    17	- ÔØî **Company Names & Titles:** Do not invent previous employers or convert independent work into formal hired employment.
+    18	- ÔØî **Dates & Timelines:** Do not alter dates of education or projects.
+    19	- ÔØî **Tools & Technologies:** Do not add CRM platforms, scraping tools, dialers, or software not explicitly listed in `master-profile.md` (even if standard for SDR roles, e.g., Outreach.io, ZoomInfo, Salesloft, Gong).
+    20	- ÔØî **Certifications & Diplomas:** Do not list any certifications (e.g., HubSpot Inbound, Salesforce Certified, etc.).
+    21	- ÔØî **Language Fluency:** Do not add languages or alter proficiency levels beyond what is stated.
+    22	- ÔØî **Domain Expertise Claims (disguised fabrication):** Do not claim understanding, fluency, literacy, or passion for a domain/technology area (e.g., "AI/cloud infrastructure", "open models", "regulated finance") unless a specific fact in `master-profile.md` directly supports it. Phrases like *"I understand how to position X"*, *"I possess the technical literacy to Y"*, *"passionate about translating Z into business value"* are capability claims, not neutral rephrasing ÔÇö even when they contain no invented tool, number, or employer, they are still fabrication if nothing in `master-profile.md` backs them.
+    23	  - **Red flag test:** if a sentence in the CV/cover letter closely echoes or paraphrases the job posting's own description of the ideal candidate (rather than describing something the candidate actually did), that is a strong signal this rule is being violated. The job posting describes what the employer wants ÔÇö it is never itself a source of fact about the candidate.
+    24	
+    25	---
+    26	
+    27	## 3. Permitted Actions
+    28	- Ô£ö´©Å **Rephrasing:** You may adapt phrasing to align with the vocabulary and keywords of the target job posting, provided the core meaning and facts remain 100% faithful to `master-profile.md`.
+    29	- Ô£ö´©Å **Reordering / Prioritization:** You may reorder experience bullets, skills, and summary points so that the most relevant points appear first.
+    30	- Ô£ö´©Å **Selective Emphasis:** You may highlight specific aspects of the candidate's experience (e.g., technical scraping vs. email copywriting) depending on the job focus.
+    31	- Ô£ö´©Å **Honest Bridging:** When a job posting asks for domain expertise the candidate doesn't have, you may build an honest bridge from an adjacent, real fact ÔÇö but it must explicitly acknowledge the gap, not paper over it. Template: *"While my direct experience has been in [actual domain from master-profile.md], I've built hands-on fluency with [actual tool/skill from master-profile.md] through [actual context] ÔÇö and I'm eager to bring that into [target domain]."* This is permitted because every clause traces to a real fact and the gap is stated honestly, not disguised.
+    32	
+    33	---
+    34	
+    35	## 4. Handling Missing Requirements (Gap Report)
+    36	- When a job posting requires a skill, certification, tool, domain expertise, or experience level that the candidate does not have in `master-profile.md`:
+    37	  - **DO NOT** add it to the resume or cover letter.
+    38	  - **DO NOT** attempt to "soften" or simulate the skill in the CV.
+    39	  - **DO NOT** paraphrase the job posting's own requirement back as a claimed personal trait or "understanding" ÔÇö rewording a gap into a confident-sounding sentence is still fabrication, not a permitted rephrasing (see Section 2, Domain Expertise Claims).
+    40	  - **DO** log it in a dedicated **Gap Report** section in the agent's chat response (outside the generated markdown documents).
+    41	
+    42	---
+    43	
+    44	## 5. Mandatory Pre-Output Self-Verification Checklist
+    45	Before saving or outputting any CV or Cover Letter, run a line-by-line verification:
+    46	
+    47	- [ ] **Line Check:** Is every single bullet point and statement directly backed by a line in `master-profile.md`? (Yes / No)
+    48	  - *Action on 'No':* Remove the sentence or bullet immediately.
+    49	- [ ] **Metrics Check:** Are all numbers (500+, 5ÔÇô10 leads/week, 3 meetings) strictly identical to `master-profile.md`? (Yes / No)
+    50	- [ ] **Tools Check:** Are all mentioned tools (Apollo.io, Instantly.ai, Sales Nav, HubSpot, Salesforce, Make.com, Python, ChatGPT, Claude, Antigravity CLI) only from the approved list? (Yes / No)
+    51	- [ ] **Role Title Check:** Is the role title accurately represented as "Founder & Lead Generation Specialist ÔÇö CLG Project"? (Yes / No)
+    52	- [ ] **Missing Skills Check:** Are missing job requirements excluded from the CV and documented in the Gap Report? (Yes / No)
+    53	- [ ] **Domain Expertise Check:** Does any sentence claim understanding, fluency, or passion for a domain/technology without a specific `master-profile.md` fact backing it ÔÇö especially any sentence that closely echoes the job posting's own wording back as a personal trait? (Yes / No)
+    54	  - *Action on 'Yes':* Rewrite using the Honest Bridging template (Section 3) or remove and move the requirement to the Gap Report.
+========== STAT & CAT: .agent/rules/domain-fit-gate.md ==========
+2026-09-24 15:42:08.311754800 +0200 .agent/rules/domain-fit-gate.md
+     1	# .agent/rules/domain-fit-gate.md
+     2	
+     3	## ðªðÁð╗Ðî
+     4	
+     5	ðÆÐïð┐ð¥ð╗ð¢ÐÅðÁÐéÐüÐÅ ðöð× workflow.md, ð┤ð╗ÐÅ ð║ð░ðÂð┤ð¥ð╣ ð¢ð¥ð▓ð¥ð╣ ð▓ð░ð║ð░ð¢Ðüð©ð© ÔÇö ÐçÐéð¥ð▒Ðï ð¢ðÁ ÐéÐÇð░Ðéð©ÐéÐî
+     6	ð▓ÐÇðÁð╝ÐÅ ð¢ð░ ð│ðÁð¢ðÁÐÇð░Ðåð©ÐÄ CV/CL ð┐ð¥ð┤ ð▓ð░ð║ð░ð¢Ðüð©ð©, ð║ð¥Ðéð¥ÐÇÐïðÁ ð¥ÐéÐüðÁð©ð▓ð░ÐÄÐéÐüÐÅ ð¢ð░ ÐâÐÇð¥ð▓ð¢ðÁ
+     7	ð▒ð░ðÀð¥ð▓ð¥ð│ð¥ ð┤ð¥ð╝ðÁð¢ð░/ð©ð¢ð┤ÐâÐüÐéÐÇð©ð©/ÐâÐüð╗ð¥ð▓ð©ð╣ ð¥ð┐ð╗ð░ÐéÐï, ð░ ð¢ðÁ ÐâÐÇð¥ð▓ð¢ÐÅ ð¢ð░ð▓Ðïð║ð¥ð▓.
+     8	
+     9	## ð¿ð░ð│ 0 ÔÇö ð┐ÐÇðÁð┤ð▓ð░ÐÇð©ÐéðÁð╗Ðîð¢ð░ÐÅ ð┐ÐÇð¥ð▓ðÁÐÇð║ð░
+    10	
+    11	1. ðÆ ÐÇð░ðÀð┤ðÁð╗ðÁ Qualifications/Requirements ÐÇð░ðÀð┤ðÁð╗ð© Ðäð¥ÐÇð╝Ðâð╗ð©ÐÇð¥ð▓ð║ð© ð¢ð░:
+    12	   - **Hard requirements** ÔÇö "required", "essential", "must have", ð©ð╗ð©
+    13	     ð┐ðÁÐÇðÁÐçð©Ðüð╗ðÁð¢Ðï ð▒ðÁðÀ Ðüð╝ÐÅð│Ðçð░ÐÄÐëð©Ðà Ðüð╗ð¥ð▓.
+    14	   - **Soft/nice-to-have** ÔÇö "plus", "nice to have", "preferred", "a bonus",
+    15	     "is a plus but not required".
+    16	
+    17	2. ðÆð¢ÐâÐéÐÇð© hard requirements ð▓Ðïð┤ðÁð╗ð© ÐéðÁ, ÐçÐéð¥ ð¥Ðéð¢ð¥ÐüÐÅÐéÐüÐÅ ð¢ðÁ ð║ ð¥ð▒Ðëð©ð╝
+    18	   sales/B2B/tech ð¢ð░ð▓Ðïð║ð░ð╝, ð░ ð║ Ðüð┐ðÁÐåð©ð░ð╗ð©ðÀð©ÐÇð¥ð▓ð░ð¢ð¢ð¥ð╣ ð©ð¢ð┤ÐâÐüÐéÐÇð©ð©
+    19	   (ð¢ð░ð┐ÐÇð©ð╝ðÁÐÇ: life sciences, biotech, pharma, CRO, legal, healthcare
+    20	   compliance, ÐÇðÁð│Ðâð╗ð©ÐÇÐâðÁð╝ÐïðÁ Ðäð©ð¢ð░ð¢ÐüÐï ð© Ðé.ð┐.).
+    21	
+    22	3. ð×Ðéð┤ðÁð╗Ðîð¢ð¥, ðöð× ð¥ÐüÐéð░ð╗Ðîð¢ÐïÐà ð┐ÐÇð¥ð▓ðÁÐÇð¥ð║, ð▓ÐüðÁð│ð┤ð░ Ðüð║ð░ð¢ð©ÐÇÐâð╣ JD ð¢ð░ ÐéÐÇð© ð║ð¥ð¢ð║ÐÇðÁÐéð¢ÐïÐà
+    23	   Ðéð©ð┐ð░ hard-ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ð╣, ð┤ð░ðÂðÁ ðÁÐüð╗ð© ð▓ð░ð║ð░ð¢Ðüð©ÐÅ ð▓ ð¥ÐüÐéð░ð╗Ðîð¢ð¥ð╝ Ðçð©ÐüÐéð¥ IT/sales:
+    24	
+    25	   - **Language requirement** ÔÇö "Must be fluent in [ÐÅðÀÐïð║]", "native [ÐÅðÀÐïð║]
+    26	     speaker required" ð© Ðé.ð┐., ð│ð┤ðÁ ÐÅðÀÐïð║ ð¢ðÁ ð▓Ðàð¥ð┤ð©Ðé ð▓ Languages ð▓
+    27	     master-profile.md (English, Spanish, Russian).
+    28	
+    29	   - **Country-specific work authorization** ÔÇö "Applicants must be
+    30	     authorized to work in [ÐüÐéÐÇð░ð¢ð░]", ð│ð┤ðÁ ÐüÐéÐÇð░ð¢ð░ ð¢ðÁ Ðüð¥ð▓ð┐ð░ð┤ð░ðÁÐé Ðü ÐéðÁð╝,
+    31	     ÐçÐéð¥ Ðâð║ð░ðÀð░ð¢ð¥ ð▓ master-profile.md. ðÆðÉðûðØð×: ð░ð▓Ðéð¥ÐÇð©ðÀð░Ðåð©ÐÅ ð┐ð¥ð╗ÐîðÀð¥ð▓ð░ÐéðÁð╗ÐÅ ÔÇö
+    32	     ðóð×ðøð¼ðÜð× ðÿÐüð┐ð░ð¢ð©ÐÅ (ð¢ð░Ðåð©ð¥ð¢ð░ð╗Ðîð¢ð¥ðÁ ð©Ðüð┐ð░ð¢Ðüð║ð¥ðÁ Residencia Temporal +
+    33	     Aut. Trabajar, ð¢ðÁ EU-wide). ðíð¥ð▓ð┐ð░ð┤ðÁð¢ð©ðÁð╝ ÐüÐçð©Ðéð░ÐéÐî Ðéð¥ð╗Ðîð║ð¥ ÐÅð▓ð¢ð¥ðÁ
+    34	     "Spain" ð▓ ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ð©. ðøÐÄð▒ð░ÐÅ ð┤ÐÇÐâð│ð░ÐÅ ÐüÐéÐÇð░ð¢ð░ ðòðí (Germany, Netherlands,
+    35	     France ð© Ðé.ð┐.) ÔÇö ð┐ð¥ Ðâð╝ð¥ð╗Ðçð░ð¢ð©ÐÄ ÐüÐçð©Ðéð░ÐéÐî ð¢ðÁÐüð¥ð▓ð┐ð░ð┤ðÁð¢ð©ðÁð╝, ðöðÉðûðò ðÁÐüð╗ð©
+    36	     ÐüÐéÐÇð░ð¢ð░ ð▓ ðòðí, ðÁÐüð╗ð© ð▓ JD ð┐ÐÇÐÅð╝ð¥ ð¢ðÁ Ðüð║ð░ðÀð░ð¢ð¥, ÐçÐéð¥ ÐÇð¥ð╗Ðî ð┐ð¥ð╗ð¢ð¥ÐüÐéÐîÐÄ
+    37	     location-agnostic (ð¢ð░Ðæð╝ ð║ð░ð║ ð║ð¥ð¢ÐéÐÇð░ð║Ðéð¥ÐÇ/ÐçðÁÐÇðÁðÀ EOR ð▒ðÁðÀ ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ÐÅ
+    38	     Ðäð©ðÀð©ÐçðÁÐüð║ð¥ð│ð¥ ð┐ÐÇð©ÐüÐâÐéÐüÐéð▓ð©ÐÅ/ÐÇðÁðÀð©ð┤ðÁð¢ÐéÐüÐéð▓ð░ ð©ð╝ðÁð¢ð¢ð¥ ð▓ ÐìÐéð¥ð╣ ÐüÐéÐÇð░ð¢ðÁ). ðòÐüð╗ð©
+    39	     JD ð┐ð©ÐêðÁÐé "Location: [ÐüÐéÐÇð░ð¢ð░]" ð©ð╗ð© "must be based in [ÐüÐéÐÇð░ð¢ð░]" ÔÇö
+    40	     ÐìÐéð¥ ÐÅð▓ð¢Ðïð╣ ð┐ÐÇð©ðÀð¢ð░ð║ ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ÐÅ ÐÇðÁð░ð╗Ðîð¢ð¥ð│ð¥ ð┐ÐÇð©ÐüÐâÐéÐüÐéð▓ð©ÐÅ Ðéð░ð╝, ð¢ðÁ ð┐ÐÇð¥ÐüÐéð¥
+    41	     Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ðÁ ð¥Ðäð©Ðüð░ ð║ð¥ð╝ð┐ð░ð¢ð©ð©.
+    42	
+    43	   - **Commission-only compensation** ÔÇö JD ÐÅð▓ð¢ð¥ Ðâð║ð░ðÀÐïð▓ð░ðÁÐé, ÐçÐéð¥ ð¥ð┐ð╗ð░Ðéð░
+    44	     ð┐ð¥ÐüÐéÐÇð¥ðÁð¢ð░ ð║ð░ð║ "commission-only", "100% commission", "straight
+    45	     commission", "uncapped commission" ðæðòðù Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ÐÅ ð▒ð░ðÀð¥ð▓ð¥ð╣/
+    46	     Ðäð©ð║Ðüð©ÐÇð¥ð▓ð░ð¢ð¢ð¥ð╣ ÐüÐéð░ð▓ð║ð©, ð╗ð©ð▒ð¥ ÐÅð▓ð¢ð¥ ð┐ð©ÐêðÁÐé "no base salary" / "draw
+    47	     against commission only" / "1099 commission-only".
+    48	     - ðíð¥ð▓ð┐ð░ð┤ðÁð¢ð©ðÁð╝ ð┤ð╗ÐÅ SKIP ÐüÐçð©Ðéð░ÐéÐî ðóð×ðøð¼ðÜð× ÐÅð▓ð¢ð¥ðÁ Ðâð║ð░ðÀð░ð¢ð©ðÁ, ÐçÐéð¥ ð▒ð░ðÀð¥ð▓ð¥ð╣
+    49	       ÐüÐéð░ð▓ð║ð© ð¢ðÁÐé. ðñð¥ÐÇð╝Ðâð╗ð©ÐÇð¥ð▓ð║ð© "base salary + commission", "base + OTE",
+    50	       "fixed salary + performance bonus/commission" ÔÇö ÐìÐéð¥ ðØðò ð┐ð¥ð▓ð¥ð┤ ð┤ð╗ÐÅ
+    51	       SKIP, ÐìÐéð¥ ð║ð░ð║ ÐÇð░ðÀ ÐåðÁð╗ðÁð▓ð¥ð╣ Ðäð¥ÐÇð╝ð░Ðé ð¥ð┐ð╗ð░ÐéÐï.
+    52	     - ðòÐüð╗ð© ð║ð¥ð╝ð┐ðÁð¢Ðüð░Ðåð©ÐÅ ð▓ JD ð▓ð¥ð¥ð▒ÐëðÁ ð¢ðÁ Ðâð┐ð¥ð╝ÐÅð¢ÐâÐéð░ (ð¢ð© ð▒ð░ðÀð░, ð¢ð© ð║ð¥ð╝ð©ÐüÐüð©ÐÅ) ÔÇö
+    53	       ÐìÐéð¥ ðØðò ð┐ð¥ð▓ð¥ð┤ ð┤ð╗ÐÅ ð░ð▓Ðéð¥ð╝ð░Ðéð©ÐçðÁÐüð║ð¥ð│ð¥ SKIP ð┐ð¥ ÐìÐéð¥ð╝Ðâ ð┐Ðâð¢ð║ÐéÐâ (Ðüð╗ð©Ðêð║ð¥ð╝
+    54	       ð╝ð¢ð¥ð│ð¥ ð╗ð¥ðÂð¢ÐïÐà ÐüÐÇð░ð▒ð░ÐéÐïð▓ð░ð¢ð©ð╣ ð┐ÐÇð© ð┐ð¥ð╗ð¢ð¥ð╝ ð¥ÐéÐüÐâÐéÐüÐéð▓ð©ð© ð┤ð░ð¢ð¢ÐïÐà), ð¢ð¥
+    55	       ð¥ð▒ÐÅðÀð░ÐéðÁð╗Ðîð¢ð¥ ð▓Ðïð¢ðÁÐüÐéð© ð┐ð¥ð╝ðÁÐéð║Ðâ ð▓ Gap Report: "Compensation structure
+    56	       not disclosed in JD ÔÇö verify base salary exists before applying."
+    57	     - ðòÐüð╗ð© Ðüð¥ð╝ð¢ðÁð▓ð░ðÁÐêÐîÐüÐÅ, commission-only ÐìÐéð¥ ð©ð╗ð© ð¢ðÁÐé (Ðäð¥ÐÇð╝Ðâð╗ð©ÐÇð¥ð▓ð║ð░
+    58	       ð¢ðÁð¥ð┤ð¢ð¥ðÀð¢ð░Ðçð¢ð░ÐÅ, ð¢ð░ð┐ÐÇð©ð╝ðÁÐÇ "competitive commission structure" ð▒ðÁðÀ
+    59	       Ðüð╗ð¥ð▓ð░ "base" ð© ð▒ðÁðÀ Ðüð╗ð¥ð▓ð░ "only") ÔÇö ð¢ðÁ ð┤ðÁð╗ð░ð╣ SKIP ð░ð▓Ðéð¥ð╝ð░Ðéð©ÐçðÁÐüð║ð©,
+    60	       ð▓Ðïð¢ðÁÐüð© ð▓ Gap Report ð║ð░ð║ ÐéÐÇðÁð▒ÐâÐÄÐëðÁðÁ ÐâÐéð¥Ðçð¢ðÁð¢ð©ÐÅ Ðâ ð┐ð¥ð╗ÐîðÀð¥ð▓ð░ÐéðÁð╗ÐÅ,
+    61	       Ðüð¥ð│ð╗ð░Ðüð¢ð¥ anti-hallucination.md ð┐.1.3 (No Guesswork).
+    62	
+    63	   ðíð¥ð▓ð┐ð░ð┤ðÁð¢ð©ðÁ Ðàð¥ÐéÐÅ ð▒Ðï ð¥ð┤ð¢ð¥ð│ð¥ ð©ðÀ ÐìÐéð©Ðà ÐéÐÇÐæÐà ð┐Ðâð¢ð║Ðéð¥ð▓ Ðü ð¢ðÁÐüð¥ð¥Ðéð▓ðÁÐéÐüÐéð▓ð©ðÁð╝
+    64	   ð┐ÐÇð¥Ðäð©ð╗ÐÄ/ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ÐÅð╝ = ð╝ð│ð¢ð¥ð▓ðÁð¢ð¢Ðïð╣ **SKIP**, ð¢ðÁðÀð░ð▓ð©Ðüð©ð╝ð¥ ð¥Ðé Ðéð¥ð│ð¥,
+    65	   ð¢ð░Ðüð║ð¥ð╗Ðîð║ð¥ Ðàð¥ÐÇð¥Ðêð¥ Ðüð¥ð▓ð┐ð░ð┤ð░ðÁÐé ð▓ÐüÐæ ð¥ÐüÐéð░ð╗Ðîð¢ð¥ðÁ. ðØðÁ ð┐ðÁÐÇðÁÐàð¥ð┤ð© ð║ Ðêð░ð│ð░ð╝ 4-5
+    66	   ð¢ð©ðÂðÁ, ðÁÐüð╗ð© ÐüÐÇð░ð▒ð¥Ðéð░ð╗ ÐìÐéð¥Ðé ð┐Ðâð¢ð║Ðé ÔÇö ð¥ð¢ ð┐ÐÇð©ð¥ÐÇð©ÐéðÁÐéð¢ðÁðÁ.
+    67	
+    68	   ðÆð░ðÂð¢ð¥: LinkedIn-ð╝ðÁÐéð║ð░ "match well" ðØðò ÐÅð▓ð╗ÐÅðÁÐéÐüÐÅ ðÀð░ð╝ðÁð¢ð¥ð╣ ÐìÐéð¥ð╣ ð┐ÐÇð¥ð▓ðÁÐÇð║ð© ÔÇö
+    69	   ð¥ð¢ð░ ð╝ð░ÐéÐçð©Ðé ð▓ ð¥Ðüð¢ð¥ð▓ð¢ð¥ð╝ ð┐ð¥ ð║ð╗ÐÄÐçðÁð▓Ðïð╝ Ðüð╗ð¥ð▓ð░ð╝ ð┤ð¥ð╗ðÂð¢ð¥ÐüÐéð©/ð¢ð░ð▓Ðïð║ð¥ð▓ ð© Ðçð░ÐüÐéð¥
+    70	   ð┐ÐÇð¥ð┐ÐâÐüð║ð░ðÁÐé ð©ð╝ðÁð¢ð¢ð¥ Ðéð░ð║ð©ðÁ ð░ð▒Ðüð¥ð╗ÐÄÐéð¢ÐïðÁ ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ÐÅ (ð▓ð║ð╗ÐÄÐçð░ÐÅ Ðäð¥ÐÇð╝ð░Ðé ð¥ð┐ð╗ð░ÐéÐï).
+    71	   ðÆÐüðÁð│ð┤ð░ ð┐ÐÇð¥ð▓ðÁÐÇÐÅð╣ JD ÐéðÁð║ÐüÐéð¥ð╝, ð┤ð░ðÂðÁ ðÁÐüð╗ð© LinkedIn ð┐ð¥ð║ð░ðÀð░ð╗ ðÀðÁð╗Ðæð¢Ðïð╣ Ðüð▓ðÁÐé.
+    72	
+    73	4. ðÜð╗ð░ÐüÐüð©Ðäð©Ðåð©ÐÇÐâð╣ ð║ð░ðÂð┤ð¥ðÁ Ðéð░ð║ð¥ðÁ ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ðÁ:
+    74	   - **Learnable skill** ÔÇö ð©ð¢ÐüÐéÐÇÐâð╝ðÁð¢Ðé, CRM, ð╝ðÁÐéð¥ð┤ð¥ð╗ð¥ð│ð©ÐÅ, IT-ÐéðÁÐÇð╝ð©ð¢ð¥ð╗ð¥ð│ð©ÐÅ,
+    75	     ÐéðÁÐàð¢ð©ÐçðÁÐüð║ð©ð╣ ð┐ÐÇð¥ð┤Ðâð║Ðé (ð┤ð░ðÂðÁ Ðüð╗ð¥ðÂð¢Ðïð╣). ðƒÐÇð©ð╝ðÁÐÇ: "Familiarity with
+    76	     Salesforce", "understanding of API integrations", "test automation
+    77	     concepts". ÔåÆ ðØðò ð▒ð╗ð¥ð║ð©ÐÇÐâðÁÐé, ð╝ð¥ðÂð¢ð¥ ðÀð░ð║ÐÇÐïÐéÐî ð┐ð¥ð┤ð│ð¥Ðéð¥ð▓ð║ð¥ð╣ ð║ ð©ð¢ÐéðÁÐÇð▓ÐîÐÄ.
+    78	   - **Network/relationship requirement** ÔÇö "established network within X",
+    79	     "existing relationships with Y decision-makers". ÔåÆ ðíÐéð¥ð┐-Ðäð░ð║Ðéð¥ÐÇ,
+    80	     ÐìÐéð¥ ð¢ðÁð╗ÐîðÀÐÅ ð┐ÐÇð©ð¥ð▒ÐÇðÁÐüÐéð© ðÀð░ ÐÇð░ðÀÐâð╝ð¢ð¥ðÁ ð▓ÐÇðÁð╝ÐÅ.
+    81	   - **Specialized non-IT domain expertise, ð¥ð▒ÐÅðÀð░ÐéðÁð╗Ðîð¢Ðïð╣** ÔÇö "1-2 years
+    82	     experience in a CRO/life sciences/legal/regulated finance..." ð©ð╝ðÁð¢ð¢ð¥
+    83	     ð║ð░ð║ required, ð¢ðÁ plus. ÔåÆ ðíÐéð¥ð┐-Ðäð░ð║Ðéð¥ÐÇ, ðÁÐüð╗ð© ð▓ master-profile.md ð¢ðÁÐé
+    84	     ð¢ð©ÐçðÁð│ð¥ ð┐ð¥Ðàð¥ðÂðÁð│ð¥.
+    85	
+    86	5. ðòÐüð╗ð© Ðàð¥ÐéÐÅ ð▒Ðï ð¥ð┤ð©ð¢ hard requirement ð┐ð¥ð┐ð░ð┤ð░ðÁÐé ð▓ ð║ð░ÐéðÁð│ð¥ÐÇð©ÐÄ "network" ð©ð╗ð©
+    87	   "specialized non-IT domain" ð© ð▓ master-profile.md ð¢ðÁÐé Ðüð¥ð▓ð┐ð░ð┤ðÁð¢ð©ÐÅ ÔÇö
+    88	   ÐüÐéð░ÐéÐâÐü ð▓ð░ð║ð░ð¢Ðüð©ð©: **SKIP**.
+    89	   - ðØðò ð│ðÁð¢ðÁÐÇð©ÐÇð¥ð▓ð░ÐéÐî CV/CL.
+    90	   - ðÆÐïð▓ðÁÐüÐéð© ð║ð¥ÐÇð¥Ðéð║ð¥ðÁ ð¥ð▒ÐèÐÅÐüð¢ðÁð¢ð©ðÁ Ðü Ðéð¥Ðçð¢ð¥ð╣ Ðåð©Ðéð░Ðéð¥ð╣ ð©ðÀ JD, ð║ð¥Ðéð¥ÐÇð░ÐÅ ÐüÐéð░ð╗ð░
+    91	     ð┐ÐÇð©Ðçð©ð¢ð¥ð╣ ð¥Ðéð║ð░ðÀð░.
+    92	
+    93	6. ðòÐüð╗ð© ð▓ÐüðÁ hard requirements ÔÇö learnable skills (ð¢ðÁðÀð░ð▓ð©Ðüð©ð╝ð¥ ð¥Ðé Ðüð╗ð¥ðÂð¢ð¥ÐüÐéð©)
+    94	   ð©ð╗ð© ð¥ð▒Ðëð©ðÁ soft skills, ð© ð¢ð© ð¥ð┤ð©ð¢ ð©ðÀ ÐéÐÇÐæÐà ð┐Ðâð¢ð║Ðéð¥ð▓ Ðêð░ð│ð░ 3 ð¢ðÁ ÐüÐÇð░ð▒ð¥Ðéð░ð╗ ÔÇö
+    95	   ÐüÐéð░ÐéÐâÐü: **PROCEED**, ð┐ðÁÐÇðÁÐàð¥ð┤ð©ÐéÐî ð║ workflow.md ð▓ ð¥ð▒ÐïÐçð¢ð¥ð╝ ð┐ð¥ÐÇÐÅð┤ð║ðÁ.
+    96	
+    97	## ðƒÐÇð©ð╝ðÁÐÇ (ð┤ð╗ÐÅ ð║ð░ð╗ð©ð▒ÐÇð¥ð▓ð║ð© ð░ð│ðÁð¢Ðéð░)
+    98	
+    99	ðÆð░ð║ð░ð¢Ðüð©ÐÅ: Inside Sales Specialist, Seuss+ (life sciences/CRO consulting).
+   100	- "1ÔÇô2 years of experience within a CRO, life sciences service
+   101	  organization..." ÔÇö required, specialized non-IT domain.
+   102	- "An established network within Clinical Operations is essential" ÔÇö
+   103	  required, network.
+   104	ÔåÆ ðáðÁðÀÐâð╗ÐîÐéð░Ðé: SKIP. ð×ð▒ðÁ ð┐ÐÇð©Ðçð©ð¢Ðï ðÀð░ð║ÐÇÐïÐéÐî ð┐ð¥ð┤ð│ð¥Ðéð¥ð▓ð║ð¥ð╣ ð║ ð©ð¢ÐéðÁÐÇð▓ÐîÐÄ ð¢ðÁð╗ÐîðÀÐÅ.
+   105	
+   106	ðÜð¥ð¢ÐéÐÇð┐ÐÇð©ð╝ðÁÐÇ (ð┤ð╗ÐÅ ÐüÐÇð░ð▓ð¢ðÁð¢ð©ÐÅ ÔÇö ðØðò ð┐ð¥ð▓ð¥ð┤ ð┤ð╗ÐÅ SKIP): ð▓ð░ð║ð░ð¢Ðüð©ÐÅ ÐéÐÇðÁð▒ÐâðÁÐé
+   107	"understanding of QA/test automation concepts" ð©ð╗ð© "exposure to DevTools" ÔÇö
+   108	ÐìÐéð¥ IT-ð║ð¥ð¢ÐéðÁð║ÐüÐé, learnable, ð┤ð░ðÂðÁ ðÁÐüð╗ð© ð¢ðÁðÀð¢ð░ð║ð¥ð╝ð¥ ð¢ð░ ÐüÐéð░ÐÇÐéðÁ.
+   109	
+   110	ðÆð░ð║ð░ð¢Ðüð©ÐÅ: "SDR ÔÇö OTE $60k (base $40k + uncapped commission)".
+   111	ÔåÆ ðØðò SKIP ð┐ð¥ ð┐Ðâð¢ð║ÐéÐâ compensation ÔÇö ðÁÐüÐéÐî ÐÅð▓ð¢ð░ÐÅ Ðäð©ð║Ðüð©ÐÇð¥ð▓ð░ð¢ð¢ð░ÐÅ ð▒ð░ðÀð░.
+   112	
+   113	ðÆð░ð║ð░ð¢Ðüð©ÐÅ: "100% commission role. Unlimited earning potential, no cap on
+   114	what you can make. This is a 1099 commission-only position."
+   115	ÔåÆ SKIP. ð»ð▓ð¢ð¥ Ðâð║ð░ðÀð░ð¢ð¥ "100% commission" ð© "commission-only", ð▒ð░ðÀÐï ð¢ðÁÐé.
+   116	
+   117	ðÆð░ð║ð░ð¢Ðüð©ÐÅ: Ðâð┐ð¥ð╝ð©ð¢ð░ðÁÐé Ðéð¥ð╗Ðîð║ð¥ "competitive commission structure and bonuses"
+   118	ð▒ðÁðÀ Ðüð╗ð¥ð▓ð░ "base" ð© ð▒ðÁðÀ Ðüð╗ð¥ð▓ð░ "only".
+   119	ÔåÆ ðØðÁ ð░ð▓Ðéð¥ð╝ð░Ðéð©ÐçðÁÐüð║ð©ð╣ SKIP. ðÆð¢ðÁÐüÐéð© ð▓ Gap Report ð║ð░ð║ ÐéÐÇðÁð▒ÐâÐÄÐëðÁðÁ ÐâÐéð¥Ðçð¢ðÁð¢ð©ÐÅ:
+   120	"ðØðÁ Ðâð║ð░ðÀð░ð¢ð░ ÐÅð▓ð¢ð¥ Ðäð©ð║Ðüð©ÐÇð¥ð▓ð░ð¢ð¢ð░ÐÅ ð▒ð░ðÀð░ ÔÇö ÐâÐéð¥Ðçð¢ð©ÐéÐî ð┐ðÁÐÇðÁð┤ ð¥Ðéð║ð╗ð©ð║ð¥ð╝."
+   121	
+   122	## ðÆð░ðÂð¢ð¥
+   123	
+   124	ð¡Ðéð¥ ð¢ðÁ Ðäð©ð╗ÐîÐéÐÇ ð┐ð¥ ð¥ð▒ÐëðÁð╣ Ðüð╗ð¥ðÂð¢ð¥ÐüÐéð© ð▓ð░ð║ð░ð¢Ðüð©ð©. SKIP ÔÇö Ðéð¥ð╗Ðîð║ð¥ ð║ð¥ð│ð┤ð░ ÐÇð░ðÀÐÇÐïð▓
+   125	Ðäð©ðÀð©ÐçðÁÐüð║ð© ð¢ðÁð╗ÐîðÀÐÅ ðÀð░ð║ÐÇÐïÐéÐî ðÀð░ ÐÇð░ðÀÐâð╝ð¢ð¥ðÁ ð▓ÐÇðÁð╝ÐÅ ð┤ð¥ Ðüð¥ð▒ðÁÐüðÁð┤ð¥ð▓ð░ð¢ð©ÐÅ (ÐçÐâðÂð░ÐÅ
+   126	ð©ð¢ð┤ÐâÐüÐéÐÇð©ÐÅ + ÐéÐÇðÁð▒ÐâðÁð╝ð░ÐÅ ÐüðÁÐéÐî ð║ð¥ð¢Ðéð░ð║Ðéð¥ð▓), ð╗ð©ð▒ð¥ ð║ð¥ð│ð┤ð░ Ðäð¥ÐÇð╝ð░Ðé ð¥ð┐ð╗ð░ÐéÐï ð┐ÐÇÐÅð╝ð¥
+   127	ð┐ÐÇð¥Ðéð©ð▓ð¥ÐÇðÁÐçð©Ðé ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ÐÄ ð┐ð¥ð╗ÐîðÀð¥ð▓ð░ÐéðÁð╗ÐÅ (ð¢ðÁÐé Ðäð©ð║Ðüð©ÐÇð¥ð▓ð░ð¢ð¢ð¥ð╣ ð▒ð░ðÀÐï), ð░ ð¢ðÁ
+   128	ð║ð¥ð│ð┤ð░ ð┐ÐÇð¥ÐüÐéð¥ ð¢ÐâðÂð¢ð¥ ð┐ð¥ð┤ð│ð¥Ðéð¥ð▓ð©ÐéÐîÐüÐÅ ð© ÐÇð░ðÀð¥ð▒ÐÇð░ÐéÐîÐüÐÅ ð▓ ÐéðÁð╝ðÁ ð©ð╗ð© ð║ð¥ð│ð┤ð░ ð┤ð░ð¢ð¢ÐïðÁ
+   129	ð¥ð▒ ð¥ð┐ð╗ð░ÐéðÁ ð▓ JD ð¥ÐéÐüÐâÐéÐüÐéð▓ÐâÐÄÐé.
+========== STAT & CAT: .agent/rules/keyword-emphasis.md ==========
+2026-08-20 10:09:31.590450900 +0200 .agent/rules/keyword-emphasis.md
+     1	\# .agent/rules/keyword-emphasis.md
+     2	
+     3	
+     4	
+     5	ð¡Ðéð¥ ð┐ÐÇð░ð▓ð©ð╗ð¥ ÐÇð░ð▒ð¥Ðéð░ðÁÐé ðƒð×ðíðøðò anti-hallucination.md ð© ð¢ð©ð║ð¥ð│ð┤ð░ ðÁð│ð¥ ð¢ðÁ ð¥Ðéð╝ðÁð¢ÐÅðÁÐé ÔÇö
+     6	
+     7	ð¥ð¢ð¥ Ðéð¥ð╗Ðîð║ð¥ ð╝ðÁð¢ÐÅðÁÐé ð┐ð¥ÐÇÐÅð┤ð¥ð║ ð© ð░ð║ÐåðÁð¢ÐéÐï ÐâðÂðÁ ÐüÐâÐëðÁÐüÐéð▓ÐâÐÄÐëð©Ðà ð▓ master-profile.md Ðäð░ð║Ðéð¥ð▓,
+     8	
+     9	ð░ ð¢ðÁ ð┤ð¥ð▒ð░ð▓ð╗ÐÅðÁÐé ð¢ð¥ð▓ÐïðÁ.
+    10	
+    11	
+    12	
+    13	\## ðúÐüð╗ð¥ð▓ð©ðÁ: JD Ðüð¥ð┤ðÁÐÇðÂð©Ðé Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ðÁ AI/no-code/automation-ð©ð¢ÐüÐéÐÇÐâð╝ðÁð¢Ðéð¥ð▓
+    14	
+    15	
+    16	
+    17	ðƒÐÇð¥ð▓ðÁÐÇÐÅð╣ ÐéðÁð║ÐüÐé ð▓ð░ð║ð░ð¢Ðüð©ð© ð¢ð░ Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ÐÅ (ð▓ ð╗ÐÄð▒ð¥ð╝ ÐÇð░ðÀð┤ðÁð╗ðÁ, ð▓ð║ð╗ÐÄÐçð░ÐÅ "nice to have"):
+    18	
+    19	AI, no-code, automation, vibe-coding, ð░ Ðéð░ð║ðÂðÁ ð║ð¥ð¢ð║ÐÇðÁÐéð¢ÐïðÁ ð¢ð░ðÀð▓ð░ð¢ð©ÐÅ ð©ð¢ÐüÐéÐÇÐâð╝ðÁð¢Ðéð¥ð▓
+    20	
+    21	(ChatGPT, Make.com, Zapier, Bolt.new, Lovable, Claude Code, Cursor, Antigravity
+    22	
+    23	ð© ð┐ð¥ð┤ð¥ð▒ð¢ÐïðÁ).
+    24	
+    25	
+    26	
+    27	\### ðòÐüð╗ð© Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ðÁ ð¢ð░ð╣ð┤ðÁð¢ð¥ ðÿ ð▓ master-profile.md ðÁÐüÐéÐî Ðüð¥ð▓ð┐ð░ð┤ð░ÐÄÐëð©ð╣ Ðäð░ð║Ðé:
+    28	
+    29	\- ðƒð¥ð┤ð¢ð©ð╝ð© ÐìÐéð¥Ðé ð▒Ðâð╗ð╗ðÁÐé ð▓ÐïÐêðÁ ð▓ Ðüð┐ð©Ðüð║ðÁ ð¥ð┐ÐïÐéð░/ð¢ð░ð▓Ðïð║ð¥ð▓ (ð┐ð¥ ÐÇðÁð╗ðÁð▓ð░ð¢Ðéð¢ð¥ÐüÐéð©).
+    30	
+    31	\- ðÆ cover letter ð┤ð¥ð▒ð░ð▓Ðî ð¥ð┤ð¢ð¥ ð║ð¥ð¢ð║ÐÇðÁÐéð¢ð¥ðÁ ð┐ÐÇðÁð┤ð╗ð¥ðÂðÁð¢ð©ðÁ, ÐüÐüÐïð╗ð░ÐÄÐëðÁðÁÐüÐÅ ð©ð╝ðÁð¢ð¢ð¥
+    32	
+    33	&#x20; ð¢ð░ ÐìÐéð¥Ðé Ðäð░ð║Ðé ÔÇö ð¢ðÁ ð¥ð▒ÐëðÁðÁ "I'm familiar with AI tools", ð░ ð║ð¥ð¢ð║ÐÇðÁÐéika
+    34	
+    35	&#x20; (ð║ð░ð║ð¥ð╣ ð©ð¢ÐüÐéÐÇÐâð╝ðÁð¢Ðé, ð┤ð╗ÐÅ ÐçðÁð│ð¥ ð©Ðüð┐ð¥ð╗ÐîðÀð¥ð▓ð░ð╗ÐüÐÅ).
+    36	
+    37	
+    38	
+    39	\### ðòÐüð╗ð© Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ðÁ ð¢ð░ð╣ð┤ðÁð¢ð¥, ðØð× ð▓ master-profile.md Ðüð¥ð▓ð┐ð░ð┤ðÁð¢ð©ÐÅ ð¢ðÁÐé:
+    40	
+    41	\- ðØð©ÐçðÁð│ð¥ ð¢ðÁ ð┤ð¥ð▒ð░ð▓ð╗ÐÅð╣ ð© ð¢ðÁ ð¢ð░ð╝ðÁð║ð░ð╣ ð¢ð░ ð¥ð┐ÐïÐé, ð║ð¥Ðéð¥ÐÇð¥ð│ð¥ ð¢ðÁÐé.
+    42	
+    43	\- ðùð░ð¢ðÁÐüð© ÐéÐÇðÁð▒ð¥ð▓ð░ð¢ð©ðÁ ð▓ Gap report ð║ð░ð║ ð¥ð▒ÐïÐçð¢ð¥ (Ðüð╝. anti-hallucination.md).
+    44	
+    45	
+    46	
+    47	\### ðòÐüð╗ð© ð▓ JD ð▓ð¥ð¥ð▒ÐëðÁ ð¢ðÁÐé Ðâð┐ð¥ð╝ð©ð¢ð░ð¢ð©ð╣ AI/no-code/automation:
+    48	
+    49	\- ðØðÁ Ðäð¥ÐÇÐüð©ÐÇÐâð╣ AI-ÐéðÁð╝Ðï ð©Ðüð║ÐâÐüÐüÐéð▓ðÁð¢ð¢ð¥. ð×ÐüÐéð░ð▓Ðî master-profile.md ð║ð░ð║ ðÁÐüÐéÐî,
+    50	
+    51	&#x20; ð▒ðÁðÀ ð©Ðüð║ÐâÐüÐüÐéð▓ðÁð¢ð¢ð¥ð│ð¥ ð▓Ðïð┐ÐÅÐçð©ð▓ð░ð¢ð©ÐÅ AI-ð¢ð░ð▓Ðïð║ð¥ð▓ ÐéÐâð┤ð░, ð│ð┤ðÁ ð©Ðà ð¢ðÁ Ðüð┐ÐÇð░Ðêð©ð▓ð░ð╗ð© ÔÇö
+    52	
+    53	&#x20; ÐìÐéð¥ ð▓Ðïð│ð╗ÐÅð┤ð©Ðé ð║ð░ð║ keyword-stuffing ð© ÐÇð░ð▒ð¥Ðéð¥ð┤ð░ÐéðÁð╗ÐÄ, ð© ð╝ð¢ðÁ ð┐ÐÇð© ÐçÐéðÁð¢ð©ð© ÐçðÁÐÇð¢ð¥ð▓ð©ð║ð░.
+    54	
+========== STAT & CAT: .agent/rules/output-format.md ==========
+2026-08-19 10:54:25.283850000 +0200 .agent/rules/output-format.md
+     1	# Output Format & Style Guidelines
+     2	
+     3	This document specifies the formatting, structure, language, and stylistic requirements for all generated documents.
+     4	
+     5	---
+     6	
+     7	## 1. Page Limit & Density
+     8	- **Resume Length:** Strictly **1 standard A4 page** (maximum).
+     9	- **Density:** Compact, scannable layout. Bullet points should be 1ÔÇô2 lines each, focusing on action verbs + context + quantitative result.
+    10	
+    11	---
+    12	
+    13	## 2. Section Order (Resume)
+    14	The order of sections must strictly follow:
+    15	1. **Header & Contact Information**
+    16	2. **Professional Summary**
+    17	3. **Experience**
+    18	4. **Skills**
+    19	5. **Education**
+    20	6. **Availability & Work Authorization**
+    21	
+    22	*Do not alter, reorder, or omit sections without explicit instruction.*
+    23	
+    24	---
+    25	
+    26	## 3. Language & Localization
+    27	- **Output Language:** All CVs and Cover Letters must be written in **English**, regardless of whether the conversation or job posting is in Russian, Spanish, or another language (unless the user explicitly requests a specific localized version).
+    28	- **Tone:** Professional, direct, action-oriented, and factual.
+    29	
+    30	---
+    31	
+    32	## 4. Tone & Vocabulary Constraints
+    33	- ÔØî **No Empty Buzzwords:** Avoid unsubstantiated fluff such as *"results-driven"*, *"passionate"*, *"highly motivated"*, *"hard-working"*, *"dynamic professional"* unless immediately paired with a concrete, verified fact or metric from `master-profile.md`.
+    34	- Ô£ö´©Å **Impact-Driven Phrasing:** Use strong action verbs (e.g., *Built, Sourced, Qualified, A/B tested, Configured, Generated, Converted*).
+    35	- Ô£ö´©Å **Quantified Context:** Highlight metrics (e.g., *500+ prospects*, *5ÔÇô10 qualified leads/week*, *3 discovery meetings*) wherever relevant to demonstrate execution capability.
+    36	
+    37	---
+    38	
+    39	## 5. Cover Letter Structure
+    40	- **Target Word Count:** Strictly **150ÔÇô200 words**.
+    41	- **Structure:**
+    42	  1. **Greeting & Targeted Hook:** Why this specific role at this specific company.
+    43	  2. **Relevant Proof Points (1ÔÇô2 paragraphs):** 2ÔÇô3 specific accomplishments/numbers directly matching job requirements.
+    44	  3. **Call to Action & Sign-off:** Clear, polite invitation for a conversation.
+========== STAT & CAT: .agent/rules/pdf-page-limit.md ==========
+2026-08-22 11:12:54.142571900 +0200 .agent/rules/pdf-page-limit.md
+     1	ðûÐæÐüÐéð║ð¥ðÁ ð¥ð│ÐÇð░ð¢ð©ÐçðÁð¢ð©ðÁ
+     2	
+     3	
+     4	
+     5	ðÿÐéð¥ð│ð¥ð▓Ðïð╣ PDF ÐÇðÁðÀÐÄð╝ðÁ ({company}\_{role}\_CV.pdf) ð¥ð▒ÐÅðÀð░ð¢ ð▒ÐïÐéÐî ÐÇð¥ð▓ð¢ð¥ 1 ÐüÐéÐÇð░ð¢ð©Ðåð░ A4. Cover letter ÔÇö Ðéð¥ðÂðÁ 1 ÐüÐéÐÇð░ð¢ð©Ðåð░.
+     6	
+     7	
+     8	
+     9	ðÜð░ð║ ð┐ÐÇð¥ð▓ðÁÐÇÐÅÐéÐî (ð¥ð▒ÐÅðÀð░ÐéðÁð╗Ðîð¢ð¥ ð┐ÐÇð¥ð│ÐÇð░ð╝ð╝ð¢ð¥, ð¢ðÁ "ð¢ð░ ð│ð╗ð░ðÀ")
+    10	
+    11	
+    12	
+    13	ðƒð¥Ðüð╗ðÁ ð│ðÁð¢ðÁÐÇð░Ðåð©ð© PDF ð░ð│ðÁð¢Ðé ð¥ð▒ÐÅðÀð░ð¢ ð▓Ðïð┐ð¥ð╗ð¢ð©ÐéÐî Ðäð░ð║Ðéð©ÐçðÁÐüð║ÐâÐÄ ð┐ÐÇð¥ð▓ðÁÐÇð║Ðâ ð║ð¥ð╗ð©ÐçðÁÐüÐéð▓ð░ ÐüÐéÐÇð░ð¢ð©Ðå, ð¢ð░ð┐ÐÇð©ð╝ðÁÐÇ:
+    14	
+    15	
+    16	
+    17	pdfinfo output/{filename}.pdf | grep Pages
+    18	
+    19	
+    20	
+    21	ð©ð╗ð© ÐçðÁÐÇðÁðÀ ð▒ð©ð▒ð╗ð©ð¥ÐéðÁð║Ðâ (pypdf/PyPDF2/pdfplumber ð▓ Python):
+    22	
+    23	
+    24	
+    25	python
+    26	
+    27	from pypdf import PdfReader
+    28	
+    29	print(len(PdfReader("output/{filename}.pdf").pages))
+    30	
+    31	
+    32	
+    33	ðÆð©ðÀÐâð░ð╗Ðîð¢ð░ÐÅ "ð¥ÐåðÁð¢ð║ð░ ð¢ð░ ð│ð╗ð░ðÀ" ðÀð░ð┐ÐÇðÁÐëðÁð¢ð░ ÔÇö ð░ð│ðÁð¢Ðé ð┤ð¥ð╗ðÂðÁð¢ ÐÅð▓ð¢ð¥ ð▓ÐïðÀð▓ð░ÐéÐî ð║ð¥ð╝ð░ð¢ð┤Ðâ/ð║ð¥ð┤ ð© ð┐ÐÇð¥Ðçð©Ðéð░ÐéÐî ÐÇðÁð░ð╗Ðîð¢ð¥ðÁ Ðçð©Ðüð╗ð¥ ÐüÐéÐÇð░ð¢ð©Ðå ð©ðÀ ð▓Ðïð▓ð¥ð┤ð░, ð┐ÐÇðÁðÂð┤ðÁ ÐçðÁð╝ Ðüð¥ð¥ð▒Ðëð░ÐéÐî ð╝ð¢ðÁ ÐÇðÁðÀÐâð╗ÐîÐéð░Ðé.
+    34	
+    35	
+    36	
+    37	\## ðòÐüð╗ð© ÐüÐéÐÇð░ð¢ð©Ðå ð▒ð¥ð╗ÐîÐêðÁ 1 ÔÇö ð┐ð¥ÐÇÐÅð┤ð¥ð║ ð┤ðÁð╣ÐüÐéð▓ð©ð╣ (ð©ð╝ðÁð¢ð¢ð¥ ð▓ ÐìÐéð¥ð╝ ð┐ð¥ÐÇÐÅð┤ð║ðÁ)
+    38	
+    39	
+    40	
+    41	1\. \*\*ðíð¢ð░Ðçð░ð╗ð░ ð┐ÐÇð¥ð▓ðÁÐÇÐî Ðäð¥ÐÇð╝ð░Ðéð©ÐÇð¥ð▓ð░ð¢ð©ðÁ, ð░ ð¢ðÁ ð║ð¥ð¢ÐéðÁð¢Ðé.\*\* ð×Ðéð║ÐÇð¥ð╣ Ðäð░ð╣ð╗ Ðêð░ð▒ð╗ð¥ð¢ð░/ÐüÐéð©ð╗ð©
+    42	
+    43	&#x20;  ð│ðÁð¢ðÁÐÇð░Ðåð©ð© (margins, font-size, line-height, spacing ð╝ðÁðÂð┤Ðâ ÐüðÁð║Ðåð©ÐÅð╝ð©).
+    44	
+    45	&#x20;  ðÆ 90% Ðüð╗ÐâÐçð░ðÁð▓ ð┐ðÁÐÇðÁð┐ð¥ð╗ð¢ðÁð¢ð©ðÁ ÔÇö ÐìÐéð¥ Ðüð╗ð©Ðêð║ð¥ð╝ ð▒ð¥ð╗ÐîÐêð©ðÁ ð¥ÐéÐüÐéÐâð┐Ðï ð©ð╗ð© ð©ð¢ÐéðÁÐÇð▓ð░ð╗Ðï,
+    46	
+    47	&#x20;  ð░ ð¢ðÁ ÐÇðÁð░ð╗Ðîð¢Ðïð╣ ð©ðÀð▒ÐïÐéð¥ð║ ÐéðÁð║ÐüÐéð░. ðƒÐÇð©ð▓ðÁð┤ð© margins/line-height ð║ ð║ð¥ð╝ð┐ð░ð║Ðéð¢Ðïð╝,
+    48	
+    49	&#x20;  ð¢ð¥ ð┐ÐÇð¥ÐäðÁÐüÐüð©ð¥ð¢ð░ð╗Ðîð¢ð¥ Ðçð©Ðéð░ðÁð╝Ðïð╝ ðÀð¢ð░ÐçðÁð¢ð©ÐÅð╝ (ð¢ð░ð┐ÐÇð©ð╝ðÁÐÇ, margins \~0.5ÔÇô0.6",
+    50	
+    51	&#x20;  font-size ð¢ðÁ ð¢ð©ðÂðÁ 10pt) ð© ð┐ðÁÐÇðÁð│ðÁð¢ðÁÐÇð©ÐÇÐâð╣.
+    52	
+    53	2\. ðòÐüð╗ð© ð┐ð¥Ðüð╗ðÁ Ðêð░ð│ð░ 1 ð▓ÐüÐæ ðÁÐëÐæ ð▒ð¥ð╗ÐîÐêðÁ 1 ÐüÐéÐÇð░ð¢ð©ÐåÐï ÔÇö Ðüð¥ð║ÐÇð░Ðéð© Ðäð¥ÐÇð╝Ðâð╗ð©ÐÇð¥ð▓ð║ð©
+    54	
+    55	&#x20;  (ð¢ðÁ Ðäð░ð║ÐéÐï!) ð▓ ð▒Ðâð╗ð╗ðÁÐéð░Ðà: Ðâð▒ðÁÐÇð© ð┐ð¥ð▓Ðéð¥ÐÇÐï Ðüð╗ð¥ð▓, Ðüð┤ðÁð╗ð░ð╣ ð┐ÐÇðÁð┤ð╗ð¥ðÂðÁð¢ð©ÐÅ ð║ð¥ÐÇð¥ÐçðÁ,
+    56	
+    57	&#x20;  ð¢ð¥ ð¢ðÁ Ðâð┤ð░ð╗ÐÅð╣ Ðüð░ð╝ð© Ðäð░ð║ÐéÐï ð© ð¢ðÁ ð╝ðÁð¢ÐÅð╣ Ðåð©ÐäÐÇÐï.
+    58	
+    59	3\. ðòÐüð╗ð© ð▓ÐüÐæ ðÁÐëÐæ ð¢ðÁ ð┐ð¥ð╝ðÁÐëð░ðÁÐéÐüÐÅ ÔÇö Ðâð▒ðÁÐÇð© ð¢ð░ð©ð╝ðÁð¢ðÁðÁ ÐÇðÁð╗ðÁð▓ð░ð¢Ðéð¢Ðïð╣ ð┤ð╗ÐÅ ð¡ðóð×ðÖ
+    60	
+    61	&#x20;  ð▓ð░ð║ð░ð¢Ðüð©ð© ð▒Ðâð╗ð╗ðÁÐé ð©ðÀ Experience ð┐ð¥Ðüð╗ðÁð┤ð¢ð©ð╝ (Ðéð¥Ðé, ÐçÐéð¥ ð╝ðÁð¢ÐîÐêðÁ ð▓ÐüðÁð│ð¥
+    62	
+    63	&#x20;  ð┐ðÁÐÇðÁÐüðÁð║ð░ðÁÐéÐüÐÅ Ðü ð║ð╗ÐÄÐçðÁð▓Ðïð╝ð© Ðüð╗ð¥ð▓ð░ð╝ð© JD), ð¢ð¥ ð¢ðÁ ð▒ð¥ð╗ðÁðÁ ð¥ð┤ð¢ð¥ð│ð¥ ð▒Ðâð╗ð╗ðÁÐéð░.
+    64	
+    65	4\. Font-size ð¢ð©ðÂðÁ 10pt ð© margins ð¢ð©ðÂðÁ 0.4" ÔÇö ðÀð░ð┐ÐÇðÁÐëðÁð¢Ðï, ð┤ð░ðÂðÁ ðÁÐüð╗ð© ÐìÐéð¥
+    66	
+    67	&#x20;  ÐÇðÁÐêð©ð╗ð¥ ð▒Ðï ð┐ÐÇð¥ð▒ð╗ðÁð╝Ðâ. ðºð©Ðéð░ðÁð╝ð¥ÐüÐéÐî ð▓ð░ðÂð¢ðÁðÁ ð▓ð┐ð©ÐüÐïð▓ð░ð¢ð©ÐÅ ð▓ 1 ÐüÐéÐÇð░ð¢ð©ÐåÐâ.
+    68	
+    69	
+    70	
+    71	ð£ð░ð║Ðüð©ð╝Ðâð╝ 3 ð©ÐéðÁÐÇð░Ðåð©ð© ð┐ÐÇð¥ð▓ðÁÐÇð║ð░ ÔåÆ ð┐ÐÇð░ð▓ð║ð░ ÔåÆ ð┐ðÁÐÇðÁð│ðÁð¢ðÁÐÇð░Ðåð©ÐÅ. ðòÐüð╗ð© ð┐ð¥Ðüð╗ðÁ 3 ð┐ð¥ð┐ÐïÐéð¥ð║ ð▓ÐüÐæ ðÁÐëÐæ ð▒ð¥ð╗ÐîÐêðÁ 1 ÐüÐéÐÇð░ð¢ð©ÐåÐï ÔÇö ð¥ÐüÐéð░ð¢ð¥ð▓ð© ð┐ÐÇð¥ÐåðÁÐüÐü ð© Ðüð¥ð¥ð▒Ðëð© ð╝ð¢ðÁ, ÐçÐéð¥ ð©ð╝ðÁð¢ð¢ð¥ ð¢ðÁ ð┐ð¥ð╝ðÁÐëð░ðÁÐéÐüÐÅ, ð▓ð╝ðÁÐüÐéð¥ Ðéð¥ð│ð¥ ÐçÐéð¥ð▒Ðï ð╝ð¥ð╗Ðçð░ ÐÇðÁðÀð░ÐéÐî Ðäð░ð║ÐéÐï ð┤ð░ð╗ÐîÐêðÁ.
+    72	
+    73	
+    74	
+    75	ð×ÐéÐçÐæÐé
+    76	
+    77	
+    78	
+    79	ðƒð¥Ðüð╗ðÁ ÐâÐüð┐ðÁÐêð¢ð¥ð╣ ð┐ÐÇð¥ð▓ðÁÐÇð║ð© ð░ð│ðÁð¢Ðé ð¥ð▒ÐÅðÀð░ð¢ ÐÅð▓ð¢ð¥ ð¢ð░ð┐ð©Ðüð░ÐéÐî ð▓ ð¥Ðéð▓ðÁÐéðÁ: "ðƒÐÇð¥ð▓ðÁÐÇðÁð¢ð¥ ð┐ÐÇð¥ð│ÐÇð░ð╝ð╝ð¢ð¥: N ÐüÐéÐÇð░ð¢ð©Ðå(ð░)." ÔÇö Ðü ÐÇðÁð░ð╗Ðîð¢Ðïð╝ Ðçð©Ðüð╗ð¥ð╝ ð©ðÀ ð▓Ðïð▓ð¥ð┤ð░ ð║ð¥ð╝ð░ð¢ð┤Ðï, ð░ ð¢ðÁ ð┐ÐÇðÁð┤ð┐ð¥ð╗ð¥ðÂðÁð¢ð©ðÁð╝.
+    80	
+========== STAT & CAT: .agent/rules/workflow.md ==========
+2026-08-19 10:54:21.722441000 +0200 .agent/rules/workflow.md
+     1	# Workflow ÔÇö Step-by-Step Task Execution
+     2	
+     3	This document outlines the mandatory step-by-step procedure the agent follows whenever a new job description is submitted (either as a file in `inbox/` or pasted directly into chat).
+     4	
+     5	---
+     6	
+     7	## Step 1: Ingestion & Job Analysis
+     8	1. Read the complete job description carefully.
+     9	2. Extract and structure the following metadata:
+    10	   - **Company Name**
+    11	   - **Target Role / Title**
+    12	   - **Core Requirements & Responsibilities**
+    13	   - **Preferred Tech Stack / Tools**
+    14	   - **Key Industry Keywords**
+    15	
+    16	---
+    17	
+    18	## Step 2: Cross-Referencing with `master-profile.md`
+    19	1. Read `master-profile.md`.
+    20	2. Compare each extracted job requirement against the facts in `master-profile.md`:
+    21	   - Identify direct matches (skills, tools, achievements, languages).
+    22	   - Identify transferable/adjacent matches strictly rooted in existing facts.
+    23	   - Identify unfulfilled requirements (gaps).
+    24	
+    25	---
+    26	
+    27	## Step 3: Resume Generation
+    28	1. Load `templates/resume-template.md`.
+    29	2. Populate the template strictly following the fixed section order:
+    30	   - **Header / Contact Information:** Taken verbatim from `master-profile.md`.
+    31	   - **Professional Summary:** 2ÔÇô3 concise sentences tailored to the role using only verified facts.
+    32	   - **Experience:** Prioritize and reorder bullet points from the CLG Project entry to emphasize the most relevant achievements for this role.
+    33	   - **Skills:** Group and highlight matching tools and skills from the profile.
+    34	   - **Education:** Degree and schedule details from `master-profile.md`.
+    35	   - **Availability & Work Authorization:** Verified availability and location preferences.
+    36	3. Ensure length fits within 1 standard A4 page.
+    37	4. Perform the self-verification checklist from `.agent/rules/anti-hallucination.md`.
+    38	
+    39	---
+    40	
+    41	## Step 4: Cover Letter Generation
+    42	1. Load `templates/cover-letter-template.md`.
+    43	2. Draft a targeted cover letter:
+    44	   - **Length:** Strictly 150ÔÇô200 words.
+    45	   - **Content:** Include 2ÔÇô3 concrete, verified achievements/metrics from `master-profile.md` that address the employer's key pain points.
+    46	   - **Tone:** Confident, direct, factual, and free of fluff.
+    47	3. Perform the self-verification checklist from `.agent/rules/anti-hallucination.md`.
+    48	
+    49	---
+    50	
+    51	## Step 5: Saving Output Files
+    52	Save the resulting markdown documents into the `output/` directory with clean, standardized filenames:
+    53	- `output/{Company}_{Role}_CV.md`
+    54	- `output/{Company}_{Role}_CoverLetter.md`
+    55	
+    56	*(Note: Replace spaces and special characters with underscores if needed, e.g., `output/Stripe_SDR_CV.md`)*
+    57	
+    58	---
+    59	
+    60	## Step 6: Presenting Response & Gap Report
+    61	In the chat output to the user:
+    62	1. Provide clickable links to the newly generated CV and Cover Letter in `output/`.
+    63	2. Present a **Gap Report** listing any job requirements or preferred qualifications from the job posting that are **not** covered by `master-profile.md`.
+    64	3. If any ambiguous points were encountered, highlight them for user clarification.
+    65	
+    66	---
+    67	
+    68	## Step 7: Application Boundaries
+    69	> [!NOTE]
+    70	> The agent only prepares tailored documents and analysis. The agent **NEVER** sends emails, submits online applications, or contacts recruiters automatically. All submission decisions and actions are handled exclusively by the user.
+========== STAT & CAT: master-profile.md ==========
+2026-08-22 10:58:21.935717000 +0200 master-profile.md
+     1	# \# Master Profile ÔÇö Daniil Kotelevets
+     2	
+     3	# 
+     4	
+     5	# \## Contact
+     6	
+     7	# 
+     8	
+     9	# \- Location: Alicante, Spain
+    10	
+    11	# \- Phone: +34 698 996 086
+    12	
+    13	# \- Email: dkotelevets2007@gmail.com
+    14	
+    15	# \- LinkedIn: linkedin.com/in/daniil-kotelevets-1a470a296
+    16	
+    17	# \- Availability: Immediate start, full-time / part-time / contract
+    18	
+    19	# \- Work authorization: Full work authorization in Spain (national residence + work permit; does not confer EU-wide work authorization)
+    20	
+    21	# \- Open to: Remote (EU \& US timezones), based in Spain; On-site/Hybrid ÔÇö Alicante area
+    22	
+    23	# 
+    24	
+    25	# \## Experience
+    26	
+    27	# 
+    28	
+    29	# \### Founder \& Lead Generation Specialist ÔÇö CLG Project
+    30	
+    31	# 
+    32	
+    33	# Jul 2025 ÔÇô Present. Independent practice, remote.
+    34	
+    35	# 
+    36	
+    37	# \- Originally targeted US-based Home Services companies; pivoted the practice
+    38	
+    39	# &#x20; to the Shopify/e-commerce space ÔÇö analyzing online stores for conversion
+    40	
+    41	# &#x20; and revenue issues (checkout friction, mobile page speed, cart abandonment)
+    42	
+    43	# &#x20; and connecting store owners with vetted web development and CRO agencies
+    44	
+    45	# &#x20; capable of implementing fixes. Revenue model: referral fees from partner
+    46	
+    47	# &#x20; agencies for qualified introductions.
+    48	
+    49	# \- Built and ran an end-to-end outbound system from scratch ÔÇö prospect
+    50	
+    51	# &#x20; sourcing, list enrichment, campaign sequencing, and inbox/domain
+    52	
+    53	# &#x20; infrastructure ÔÇö with no team or budget support.
+    54	
+    55	# \- Sourced and qualified 500+ B2B prospects using structured ICP criteria and
+    56	
+    57	# &#x20; data-scraping workflows, then segmented them for targeted outreach.
+    58	
+    59	# \- Wrote and A/B tested cold email sequences using AI copywriting tools,
+    60	
+    61	# &#x20; iterating on subject lines and CTAs to improve open and reply rates.
+    62	
+    63	# \- Set up and maintained sender domain health (SPF, DKIM, DMARC) and mailbox
+    64	
+    65	# &#x20; warm-ups to protect deliverability across multiple sending domains.
+    66	
+    67	# \- Generated a consistent 5ÔÇô10 qualified leads per week and converted
+    68	
+    69	# &#x20; outreach into 3 discovery meetings with US decision-makers.
+    70	
+    71	# 
+    72	
+    73	# \## Skills
+    74	
+    75	# 
+    76	
+    77	# \- Outbound \& Sales: B2B Lead Generation, Cold Outreach, Prospecting, Lead Qualification, A/B Testing, Email Deliverability
+    78	
+    79	# \- Sales Tech \& AI: LinkedIn Sales Navigator, Apollo.io, Instantly.ai, HubSpot / Salesforce (CRM), ChatGPT (prompt engineering), Make.com (automation)
+    80	
+    81	# \- Technical: Python (basic scripting \& data extraction), domain/email system setup
+    82	
+    83	# \- AI/Agentic Tooling: hands-on setup and use of Claude, Antigravity CLI for workflow automation
+    84	
+    85	# \- Languages: English (Fluent), Spanish (Fluent), Russian (Native)
+    86	
+    87	# 
+    88	
+    89	# \## Education
+    90	
+    91	# 
+    92	
+    93	# BSc, Multimedia Engineering ÔÇö University of Alicante, 2025ÔÇô2029 (Expected). Flexible/part-time schedule, structured to accommodate full-time remote work.
+    94	
+    95	# 
+    96	
+    97	# \## Explicit non-facts (do not imply these)
+    98	
+    99	# 
+   100	
+   101	# \- No formal employment history besides CLG Project (self-founded, not a hired position).
+   102	
+   103	# \- No certifications held yet (no ISTQB, no HubSpot/Salesforce certs, etc.) ÔÇö do not reference any.
+   104	
+   105	# \- No prior SDR/BDR title held at a company ÔÇö CLG Project is independent/self-directed, not a job title granted by an employer.
+   106	
+   107	# \- No EU-wide work authorization ÔÇö Spain only. Do not imply eligibility to work in-country in other EU states (e.g. Germany, Netherlands) unless the role is explicitly structured as remote/contractor with no in-country presence requirement.
+   108	
+========== STAT & CAT: templates/resume-template.md ==========
+2026-08-19 10:54:32.158569600 +0200 templates/resume-template.md
+     1	# {{name}}
+     2	{{location}} | {{phone}} | [{{email}}](mailto:{{email}}) | [{{linkedin_clean}}]({{linkedin_url}})
+     3	
+     4	---
+     5	
+     6	## Professional Summary
+     7	{{summary}}
+     8	
+     9	---
+    10	
+    11	## Experience
+    12	
+    13	### {{role_title}} ÔÇö {{company_or_project}}
+    14	*{{dates}} | {{work_model_and_focus}}*
+    15	
+    16	{{experience_bullets}}
+    17	
+    18	---
+    19	
+    20	## Skills
+    21	- **Outbound & Sales:** {{skills_outbound}}
+    22	- **Sales Tech & AI:** {{skills_salestech}}
+    23	- **Technical:** {{skills_technical}}
+    24	- **Languages:** {{skills_languages}}
+    25	
+    26	---
+    27	
+    28	## Education
+    29	**{{degree}}** ÔÇö {{institution}}, {{dates_education}}
+    30	*{{education_details}}*
+    31	
+    32	---
+    33	
+    34	## Availability & Work Authorization
+    35	- **Availability:** {{availability}}
+    36	- **Work Authorization:** {{work_authorization}}
+    37	- **Location Preferences:** {{work_location_preferences}}
+========== STAT & CAT: templates/cover-letter-template.md ==========
+2026-08-19 11:49:19.881259700 +0200 templates/cover-letter-template.md
+     1	# {{name}}
+     2	{{location}} | {{phone}} | [{{email}}](mailto:{{email}}) | [{{linkedin_clean}}]({{linkedin_url}})
+     3	
+     4	---
+     5	
+     6	**Date:** {{current_date}}  
+     7	**To:** Hiring Team / {{hiring_manager_title}}  
+     8	**Company:** {{target_company}}  
+     9	**Role:** {{target_role}}  
+    10	
+    11	---
+    12	
+    13	Dear {{hiring_team_or_name}},
+    14	
+    15	{{opening_hook_and_value_proposition}}
+    16	
+    17	{{body_paragraph_key_achievements_and_relevant_metrics}}
+    18	
+    19	{{closing_cta_and_alignment}}
+    20	
+    21	Sincerely,  
+    22	**{{name}}**
