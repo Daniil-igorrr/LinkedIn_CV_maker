@@ -47,6 +47,7 @@ RULE_FILES = [
     ".agent/rules/pdf-page-limit.md",
     ".agent/rules/correspondence.md",
     ".agent/rules/execution-log.md",
+    ".agent/rules/agent-boundaries.md",
 ]
 
 
@@ -207,7 +208,7 @@ def complete(filename: str, record_file: str | None) -> None:
     if destination.exists():
         # Filenames can legitimately repeat across batches. Preserve the
         # previous processed file and give this batch a collision-safe name.
-        destination = PROCESSED / f"{manifest["batch_id"]}__{filename}"
+        destination = PROCESSED / f'{manifest["batch_id"]}__{filename}'
 
     OUTPUT.mkdir(parents=True, exist_ok=True)
     log = OUTPUT / "execution_log.md"
