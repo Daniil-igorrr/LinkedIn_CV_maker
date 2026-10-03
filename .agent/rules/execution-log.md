@@ -1,14 +1,17 @@
 # .agent/rules/execution-log.md
 
 ## Purpose
+A machine-readable append-only log of every processed job. The final chat report is not evidence of execution.
 
-A machine-readable log of every processing step — separate from the human-readable Batch Report. It is needed so that a separate controller agent can verify whether the rules were actually applied rather than simply trusting the final summary.
+## Ownership
+`output/execution_log.md` is owned by `scripts/batch_controller.py`.
 
-## When to Write
+The AI agent MUST NOT create, overwrite, truncate, or append to `output/execution_log.md` directly. Do not use `Create`, `Write File`, `Set-Content`, `Out-File`, `Add-Content`, `>>`, or any equivalent operation against the main log.
 
-After processing EVERY job posting (both in batch mode and when processing a single job) — append a record to `output/execution_log.md` (Markdown, append-only, never overwrite the entire file).
+The agent creates only a temporary record for the current job under `.batch/records/`. The controller appends that record and moves the exact source file when `complete` is called.
 
 ## Record Format
+The temporary record must contain:
 
 ```markdown
 ## {timestamp} — {Company} — {Role}
@@ -28,14 +31,21 @@ After processing EVERY job posting (both in batch mode and when processing a sin
 - Gap Report items: {list or "none"}
 ```
 
+For a SKIP job, all non-applicable checks are `N/A (skipped)`, as defined by the record format. If a check was not actually performed, write `NOT CHECKED`; never guess `PASS`.
 
-## Append-Only Write Method
+## Required completion sequence
+1. Finish the current job.
+2. Write exactly one temporary record under `.batch/records/`.
+3. Run:
+```bash
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+```
 
-Records must be added **ONLY** through a shell append command (`Add-Content` / `>>`), NEVER through Create/Write File — those tools overwrite the entire file.
-If it is unclear which tool will be used, first run `cat output/execution_log.md` to verify that the existing records have not been lost.
+The controller:
+- verifies the rule hashes;
+- verifies the source file has not changed;
+- appends the record using an actual append operation;
+- moves exactly the current source file;
+- advances the next pending file or closes the batch.
 
-## Rule
-
-A record is mandatory for EVERY job posting without exception, including SKIP (record the verdict + reasoning; all other fields should be "N/A (skipped)").
-
-If any checklist item was not actually checked — write "NOT CHECKED", do not guess "PASS". A false "PASS" without a real check is worse than an honest "NOT CHECKED" — this is exactly what the controller is supposed to catch.
+There is no wildcard move operation in the supported workflow.
