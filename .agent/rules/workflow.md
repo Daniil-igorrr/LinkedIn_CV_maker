@@ -42,7 +42,9 @@ After the current job is finished:
 python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
-If `complete` returns **any error**, **STOP immediately**. Do not attempt to repair the filesystem, remove an existing destination, move the source manually, rerun with another filename, or otherwise bypass the controller. Report the exact error and wait for recovery instructions.\n\nThe controller verifies the source hash, appends the record to `output/execution_log.md`, moves **exactly that file** to `inbox/processed/`, and advances the next pending job.
+If `complete` returns **any error**, **STOP immediately**. Do not attempt to repair the filesystem, remove an existing destination, move the source manually, rerun with another filename, or otherwise bypass the controller. Report the exact error and wait for recovery instructions.
+
+The controller verifies the source hash, appends the record to `output/execution_log.md`, moves **exactly that file** to `inbox/processed/`, and advances the next pending job.
 
 If rule hashes changed, the controller stops the batch.
 
