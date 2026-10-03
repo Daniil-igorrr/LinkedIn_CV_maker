@@ -16,8 +16,8 @@
 Для нескольких вакансий **не передавайте управление batch state самому LLM**. Используйте controller:
 
 ```bash
-python3 scripts/batch_controller.py prepare
-python3 scripts/batch_controller.py current
+python scripts/batch_controller.py prepare
+python scripts/batch_controller.py current
 ```
 
 Контроллер фиксирует максимум 5 файлов в `.batch/manifest.json`, сохраняет SHA-256 правил и исходных файлов и выдаёт ровно один CURRENT JOB.
@@ -31,7 +31,7 @@ python3 scripts/batch_controller.py current
 Затем:
 
 ```bash
-python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<job>.record.md"
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<job>.record.md"
 ```
 
 Controller сам:
