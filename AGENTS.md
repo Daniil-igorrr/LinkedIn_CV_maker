@@ -65,17 +65,17 @@ The controller exclusively owns batch state, exact file movement, rule-lock veri
 ### Controller commands
 Start a batch with:
 ```bash
-python3 scripts/batch_controller.py prepare
+python scripts/batch_controller.py prepare
 ```
 
 Get the only allowed current job with:
 ```bash
-python3 scripts/batch_controller.py current
+python scripts/batch_controller.py current
 ```
 
 After the current job is fully processed and its temporary execution record is written:
 ```bash
-python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 Do not call `complete` for another file. Do not manually move or delete batch files.
