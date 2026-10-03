@@ -26,7 +26,12 @@ python scripts/batch_controller.py current
 ### Job isolation
 Process **ONLY** the filename returned by `current`.
 
+### Full-batch execution
+If the user asks to process/continue the batch, do NOT stop after one successful job. After `complete` returns `Next:`, immediately run `current` again and process the next job. Continue this loop until the controller prints `Batch complete.` or a controller/infrastructure error occurs. The user must not need to send another "continue" message between jobs.
+
 Do NOT:
+- create scripts, helper programs, replacement tooling, or ad-hoc generators;
+- install packages or modify project dependencies while processing a job;
 - inspect or process other pending files;
 - choose another file;
 - manage batch state manually;
@@ -35,7 +40,9 @@ Do NOT:
 - use wildcard filesystem operations;
 - write to `output/execution_log.md`.
 
-The agent may create the current job's outputs and one temporary execution record under `.batch/records/`.
+The agent may create the current job's outputs and one temporary execution record under `.batch/records/`. It may update `output/applications_tracker.md` when required by `.agent/rules/correspondence.md`.
+
+Use only existing documented PDF-generation tooling. If it is missing or unavailable, STOP; do not create a replacement script, install dependencies, or invent a new PDF pipeline.
 
 After the current job is finished:
 ```bash
