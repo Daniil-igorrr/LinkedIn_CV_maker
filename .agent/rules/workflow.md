@@ -8,7 +8,7 @@ If the user asks to process everything in `inbox/`, the agent MUST use the deter
 
 Start:
 ```bash
-python3 scripts/batch_controller.py prepare
+python scripts/batch_controller.py prepare
 ```
 
 The controller:
@@ -20,7 +20,7 @@ The controller:
 
 Before each job, obtain the current filename:
 ```bash
-python3 scripts/batch_controller.py current
+python scripts/batch_controller.py current
 ```
 
 ### Job isolation
@@ -39,7 +39,7 @@ The agent may create the current job's outputs and one temporary execution recor
 
 After the current job is finished:
 ```bash
-python3 scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 If `complete` returns **any error**, **STOP immediately**. Do not attempt to repair the filesystem, remove an existing destination, move the source manually, rerun with another filename, or otherwise bypass the controller. Report the exact error and wait for recovery instructions.
