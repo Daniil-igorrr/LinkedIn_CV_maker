@@ -20,10 +20,15 @@ except ImportError as exc:
 MARGIN = 0.5 * inch
 
 def markup(text: str) -> str:
+    links = []
+    def stash(match):
+        token = f"@@LINK{len(links)}@@"
+        links.append((token, match.group(1), match.group(2)))
+        return token
+    text = re.sub(r"\\[([^\\]]+)\\]\\(([^)]+)\\)", stash, text)
     text = text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
-    text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
-    text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", text)
+    text = re.sub(r"\\*\\*([^*]+)\\*\\*", r"<b>\\1</b>", text)
+    text = re.sub(r"(?<!\\*)\\*([^*]+)\\*(?!\\*)", r"<i>\\1</i>", text)
     for token, label, url in links:
         safe_url = url.replace("&", "&amp;").replace('"', "&quot;")
         safe_label = label.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
