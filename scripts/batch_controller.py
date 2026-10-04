@@ -23,6 +23,7 @@ import hashlib
 import json
 import os
 import shutil
+import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -36,6 +37,8 @@ MANIFEST = BATCH / "manifest.json"
 LOCK = BATCH / "batch.lock"
 RECORDS = BATCH / "records"
 MAX_FILES = 5
+VENV_DIR = ROOT / ".venv"
+REQUIREMENTS = ROOT / "requirements.txt"
 
 RULE_FILES = [
     "AGENTS.md",
@@ -107,8 +110,37 @@ def ensure_no_active_batch() -> None:
         fail("An active batch already exists. Finish or abort it before starting another.")
 
 
+def venv_python() -> Path:
+    if os.name == "nt":
+        return VENV_DIR / "Scripts" / "python.exe"
+    return VENV_DIR / "bin" / "python"
+
+
+def ensure_project_venv() -> None:
+    """Ensure the project virtual environment and declared PDF dependencies exist."""
+    if not REQUIREMENTS.is_file():
+        fail("requirements.txt is missing; cannot prepare the project environment.")
+
+    python = venv_python()
+    if not python.is_file():
+        print("Project .venv not found; creating it...")
+        subprocess.run([sys.executable, "-m", "venv", str(VENV_DIR)], cwd=ROOT, check=True)
+
+    if not python.is_file():
+        fail(f"Project virtual environment is unavailable: {python}")
+
+    print("Checking project .venv dependencies...")
+    subprocess.run(
+        [str(python), "-m", "pip", "install", "-r", str(REQUIREMENTS)],
+        cwd=ROOT,
+        check=True,
+    )
+    print(f"Project environment ready: {python}")
+
+
 def prepare() -> None:
     ensure_no_active_batch()
+    ensure_project_venv()
     INBOX.mkdir(parents=True, exist_ok=True)
     PROCESSED.mkdir(parents=True, exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
