@@ -1,2 +1,4 @@
 google-auth-oauthlib
 google-api-python-client
+reportlab>=5.0,<6
+pypdf>=6.0,<7
