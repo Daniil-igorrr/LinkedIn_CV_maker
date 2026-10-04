@@ -24,6 +24,10 @@ def markup(text: str) -> str:
     text = re.sub(r"\[([^\]]+)\]\([^)]+\)", r"\1", text)
     text = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", text)
     text = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", text)
+    for token, label, url in links:
+        safe_url = url.replace("&", "&amp;").replace('"', "&quot;")
+        safe_label = label.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+        text = text.replace(token, f'<link href="{safe_url}" color="blue">{safe_label}</link>')
     return text
 
 def flowables(text: str):
@@ -59,8 +63,18 @@ def render(source: Path) -> int:
     target = source.with_suffix(".pdf")
     doc = SimpleDocTemplate(str(target), pagesize=A4, leftMargin=MARGIN, rightMargin=MARGIN, topMargin=MARGIN, bottomMargin=MARGIN, title=source.stem, author="LinkedIn CV Maker")
     doc.build(flowables(source.read_text(encoding="utf-8")))
-    pages = len(PdfReader(str(target)).pages)
-    print(f"{target}: {pages} page(s)")
+    reader = PdfReader(str(target))
+    pages = len(reader.pages)
+    links = []
+    for page in reader.pages:
+        for annotation in page.get("/Annots", []):
+            obj = annotation.get_object()
+            action = obj.get("/A")
+            if action and action.get("/URI"):
+                links.append(str(action.get("/URI")))
+    if not any("linkedin.com/in/daniil-kotelevets-1a470a296" in link for link in links):
+        raise RuntimeError(f"{target.name} is missing the clickable LinkedIn profile link.")
+    print(f"{target}: {pages} page(s); LinkedIn hyperlink verified")
     if pages != 1:
         raise RuntimeError(f"{target.name} is {pages} page(s); exactly 1 A4 page is required.")
     return pages
