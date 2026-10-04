@@ -58,3 +58,16 @@ AI-агент не должен использовать `Move-Item inbox\\*.txt
 ## Google Calendar
 
 Для календарных скриптов требуется Python 3.x и `credentials.json`, который находится в `.gitignore`.
+
+
+## PDF Generation
+
+For PROCEED jobs, generate the final PDFs with the repository-owned Python pipeline:
+
+```bash
+python scripts/generate_pdfs.py \
+  --cv "output/<Company>_<Role>_CV.md" \
+  --cover-letter "output/<Company>_<Role>_CoverLetter.md"
+```
+
+The dependencies are declared in `requirements.txt`. The generator renders A4 PDFs and verifies the actual page count with `pypdf`; it fails unless both documents are exactly one page.
