@@ -52,3 +52,15 @@ Before saving or outputting any CV or Cover Letter, run a line-by-line verificat
 - [ ] **Missing Skills Check:** Are missing job requirements excluded from the CV and documented in the Gap Report? (Yes / No)
 - [ ] **Domain Expertise Check:** Does any sentence claim understanding, fluency, or passion for a domain/technology without a specific `master-profile.md` fact backing it — especially any sentence that closely echoes the job posting's own wording back as a personal trait? (Yes / No)
   - *Action on 'Yes':* Rewrite using the Honest Bridging template (Section 3) or remove and move the requirement to the Gap Report.
+
+
+## 6. Soft-Skill and Target-Title Guardrails
+
+Treat soft-skill statements as factual claims too. Do not claim "highly motivated", "coachability", "excellent communication skills", "strong communicator", "adaptable", "organized", "results-driven", or similar traits unless `master-profile.md` directly supports the trait or a concrete behavior/result demonstrates it.
+
+Never convert the target job title into prior experience. If the candidate has no prior formal SDR/BDR title, the CV may target an SDR/BDR role but must keep the real experience title exactly as documented:
+`Founder & Lead Generation Specialist — CLG Project`.
+
+Never copy work-authorization wording from another generated document. Always use the exact authorization scope from `master-profile.md`. In particular, do not turn Spain-only authorization into "EU work authorization".
+
+Previous CVs and cover letters are style references only. They are never sources of truth.
