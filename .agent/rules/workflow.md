@@ -98,3 +98,17 @@ Provide links to generated outputs and the Gap Report. For skipped jobs, provide
 
 ## Step 8: Application Boundaries
 The agent only prepares tailored documents and analysis. It NEVER sends emails, submits applications, or contacts recruiters automatically.
+
+
+## 9. Tailored Quality Pass
+
+For every PROCEED job, before creating the execution record:
+1. Re-read the current JD and compare it against the drafted CV/CL.
+2. Identify the 3–5 strongest job requirements.
+3. Verify that the CV Summary and top experience bullets visibly prioritize the strongest factual matches.
+4. Verify the Cover Letter names the target company/role and contains 2–3 concrete, job-relevant proof points from `master-profile.md`.
+5. Remove generic filler and unsupported enthusiasm.
+6. Confirm the header retains the Markdown LinkedIn link from the templates.
+7. Run the official PDF generator and require its LinkedIn hyperlink verification to pass.
+
+Use previous successful documents such as AMOX only as a **style/quality reference** (structure, specificity, evidence density). Never copy their claims, dates, authorization wording, or other facts unless independently supported by `master-profile.md`.
