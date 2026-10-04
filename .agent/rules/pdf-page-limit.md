@@ -9,7 +9,7 @@ The final resume PDF (`{company}_{role}_CV.pdf`) MUST be exactly 1 A4 page. The 
 For PROCEED jobs, use only the repository's official PDF generator:
 
 ```bash
-python scripts/generate_pdfs.py \
+.venv\\Scripts\\python.exe scripts/generate_pdfs.py \
   --cv "output/{Company}_{Role}_CV.md" \
   --cover-letter "output/{Company}_{Role}_CoverLetter.md"
 ```
