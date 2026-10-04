@@ -83,3 +83,55 @@ python -m venv .venv
 ```
 
 The Antigravity PDF step should use `.venv\\Scripts\\python.exe scripts/generate_pdfs.py ...`. The WSL environment may use its own `.venv`; do not use `--break-system-packages`.
+
+## Bulk Vacancy Import
+
+Put multiple vacancies into:
+
+`inbox/vacancies.txt`
+
+You can separate vacancies using a numbered format:
+
+```text
+1) Business Development Representative
+Company: Paydora
+Location: Remote
+
+Job description...
+
+2) Account Executive
+Company: Example Corp
+Location: Madrid
+
+Job description...
+```
+
+Or, for maximum reliability, use the explicit separator format:
+
+```text
+Business Development Representative
+Company: Paydora
+
+Job description...
+
+---JOB---
+
+Account Executive
+Company: Example Corp
+
+Job description...
+```
+
+Then run the parser to split them into individual jobs in the `inbox/` folder:
+
+```bash
+python scripts/vacancy_parser.py
+```
+
+Preview without creating files:
+
+```bash
+python scripts/vacancy_parser.py --dry-run
+```
+
+Once split, run `python scripts/batch_controller.py prepare` to process the jobs one by one.
