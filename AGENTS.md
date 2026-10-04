@@ -68,6 +68,12 @@ The agent must NOT interpret the end of one job as the end of the batch. A succe
 
 ---
 
+## 4. Project Python Environment
+- On Windows/Antigravity, ALL project Python commands MUST use `.venv\Scripts\python.exe`.
+- This includes `batch_controller.py` and `generate_pdfs.py`.
+- Do NOT use global `python`, `python3`, or system Python for project commands.
+- If `.venv` or required dependencies are unavailable, STOP and report the exact error. Do not create a replacement environment or install packages during job processing.
+
 ## 4. Templates & Formatting Standards
 - **Content Structure:** All generated resumes must strictly follow the section order and skeleton of `templates/resume-template.md`. Cover letters must follow `templates/cover-letter-template.md`.
 - **Visual Formatting Reference:** `templates/visual-style-reference.docx` is the benchmark for visual presentation.
