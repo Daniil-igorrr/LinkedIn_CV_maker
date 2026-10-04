@@ -56,7 +56,7 @@ Before saving or outputting any CV or Cover Letter, run a line-by-line verificat
 
 ## 6. Soft-Skill and Target-Title Guardrails
 
-Treat soft-skill statements as factual claims too. Do not claim "highly motivated", "coachability", "excellent communication skills", "strong communicator", "adaptable", "organized", "results-driven", or similar traits unless `master-profile.md` directly supports the trait or a concrete behavior/result demonstrates it.
+Treat soft-skill and personality statements as factual claims. Do not use generic self-descriptors such as "highly motivated", "highly coachable", "coachability", "eager to succeed", "driven", "passionate", "proactive", "adaptable", "organized", "results-driven", "strong communicator", "highly comfortable", or similar claims unless the exact trait is directly supported by `master-profile.md`. Prefer concrete evidence (actions, tools, metrics, outcomes) instead of personality labels. If a sentence can be removed without losing a factual achievement, remove it.
 
 Never convert the target job title into prior experience. If the candidate has no prior formal SDR/BDR title, the CV may target an SDR/BDR role but must keep the real experience title exactly as documented:
 `Founder & Lead Generation Specialist — CLG Project`.
