@@ -71,3 +71,15 @@ python scripts/generate_pdfs.py \
 ```
 
 The dependencies are declared in `requirements.txt`. The generator renders A4 PDFs and verifies the actual page count with `pypdf`; it fails unless both documents are exactly one page.
+
+
+### Local Python environment
+
+Use a project virtual environment on Windows rather than installing PDF dependencies into the global Python installation:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+The Antigravity PDF step should use `.venv\\Scripts\\python.exe scripts/generate_pdfs.py ...`. The WSL environment may use its own `.venv`; do not use `--break-system-packages`.
