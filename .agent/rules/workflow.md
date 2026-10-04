@@ -8,7 +8,7 @@ If the user asks to process everything in `inbox/`, the agent MUST use the deter
 
 Start:
 ```bash
-python .venv\Scripts\python.exe scripts/batch_controller.py prepare
+python scripts/batch_controller.py prepare
 ```
 
 The controller:
