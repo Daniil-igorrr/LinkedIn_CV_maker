@@ -57,10 +57,10 @@ The controller exclusively owns batch state, exact file movement, rule-lock veri
 When the user asks to continue/process the current batch, the agent MUST run the batch continuously until the controller reports `Batch complete.`.
 
 The required loop is:
-1. Run `python scripts/batch_controller.py current`.
+1. Run `python .venv\Scripts\python.exe scripts/batch_controller.py current`.
 2. Process ONLY the returned CURRENT JOB.
 3. Write the current job's temporary execution record.
-4. Run `python scripts/batch_controller.py complete ...`.
+4. Run `python .venv\Scripts\python.exe scripts/batch_controller.py complete ...`.
 5. If `complete` succeeds and prints `Next:`, immediately return to step 1 without waiting for another user message.
 6. Stop only when the controller prints `Batch complete.`, or when a controller/infrastructure error requires a stop.
 
@@ -81,17 +81,17 @@ The agent must NOT interpret the end of one job as the end of the batch. A succe
 ### Controller commands
 Start a batch with:
 ```bash
-python scripts/batch_controller.py prepare
+python .venv\Scripts\python.exe scripts/batch_controller.py prepare
 ```
 
 Get the only allowed current job with:
 ```bash
-python scripts/batch_controller.py current
+python .venv\Scripts\python.exe scripts/batch_controller.py current
 ```
 
 After the current job is fully processed and its temporary execution record is written:
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python .venv\Scripts\python.exe scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 Do not call `complete` for another file. Do not manually move or delete batch files.
