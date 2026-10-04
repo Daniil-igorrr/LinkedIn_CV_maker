@@ -42,7 +42,7 @@ Do NOT:
 
 The agent may create the current job's outputs and one temporary execution record under `.batch/records/`. It may update `output/applications_tracker.md` when required by `.agent/rules/correspondence.md`.
 
-Use only existing documented PDF-generation tooling. If it is missing or unavailable, STOP; do not create a replacement script, install dependencies, or invent a new PDF pipeline.
+The official PDF pipeline is scripts/generate_pdfs.py. Run it for every PROCEED job after creating the Markdown CV and Cover Letter. It writes A4 PDFs beside the Markdown sources and verifies the actual page count with pypdf. Dependencies are declared in requirements.txt and must be installed outside job processing. If the generator or its dependencies are missing, STOP; do not create a replacement, install packages, or invent another PDF pipeline.
 
 After the current job is finished:
 ```bash
