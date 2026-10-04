@@ -37,7 +37,8 @@ MANIFEST = BATCH / "manifest.json"
 LOCK = BATCH / "batch.lock"
 RECORDS = BATCH / "records"
 MAX_FILES = 5
-EXCLUDED_INPUT_FILES = {"vacancies.txt"}
+AGGREGATE_INPUT = "vacancies.txt"
+JOB_DELIMITER = "---JOB---"
 VENV_DIR = ROOT / ".venv"
 REQUIREMENTS = ROOT / "requirements.txt"
 
@@ -139,6 +140,55 @@ def ensure_project_venv() -> None:
     print(f"Project environment ready: {python}")
 
 
+def _safe_filename_part(value: str) -> str:
+    value = value.strip().replace("/", "-").replace("\\", "-")
+    value = " ".join(value.split())
+    safe = "".join(ch if ch.isalnum() or ch in " ._-()" else "-" for ch in value)
+    safe = " ".join(safe.split())
+    return safe.strip(" ._-") or "job"
+
+
+def _aggregate_job_filename(index: int, job_text: str) -> str:
+    company = ""
+    role = ""
+    for line in job_text.splitlines():
+        stripped = line.strip()
+        if not company and stripped.lower().startswith("company logo for,"):
+            company = stripped.split(",", 1)[1].strip().rstrip(".")
+        elif company and stripped and stripped != company and not role:
+            role = stripped
+    label = _safe_filename_part(company or f"Job {index:02d}")
+    if role:
+        label = f"{label}_{_safe_filename_part(role)}"
+    return f"{index:02d}_{label}.txt"
+
+
+def materialize_aggregate_vacancies() -> None:
+    aggregate = INBOX / AGGREGATE_INPUT
+    if not aggregate.is_file():
+        return
+
+    text = aggregate.read_text(encoding="utf-8")
+    jobs = [part.strip() for part in text.split(JOB_DELIMITER) if part.strip()]
+    if not jobs:
+        fail(f"{AGGREGATE_INPUT} contains no jobs separated by {JOB_DELIMITER!r}.")
+
+    for index, job_text in enumerate(jobs, 1):
+        filename = _aggregate_job_filename(index, job_text)
+        destination = INBOX / filename
+        content = job_text.rstrip() + "\n"
+        if destination.exists():
+            if destination.read_text(encoding="utf-8") != content:
+                fail(
+                    f"Generated vacancy file already exists with different content: {filename}. "
+                    f"Rename/remove the conflicting file before prepare."
+                )
+        else:
+            destination.write_text(content, encoding="utf-8")
+
+    print(f"Parsed {len(jobs)} vacancies from {AGGREGATE_INPUT} using {JOB_DELIMITER!r}.")
+
+
 def prepare() -> None:
     ensure_no_active_batch()
     ensure_project_venv()
@@ -148,13 +198,15 @@ def prepare() -> None:
     BATCH.mkdir(parents=True, exist_ok=True)
     RECORDS.mkdir(parents=True, exist_ok=True)
 
+    materialize_aggregate_vacancies()
+
     files = sorted(
-        (p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() == ".txt" and p.name.casefold() not in EXCLUDED_INPUT_FILES),
+        (p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() == ".txt" and p.name.casefold() != AGGREGATE_INPUT),
         key=lambda p: p.name.casefold(),
     )
     selected = files[:MAX_FILES]
     if not selected:
-        fail("No .txt job postings found in inbox/.")
+        fail("No .txt job postings found in inbox/. Put job files there or add vacancies.txt with ---JOB--- separators.")
 
     batch_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     manifest = {
