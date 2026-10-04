@@ -37,6 +37,7 @@ MANIFEST = BATCH / "manifest.json"
 LOCK = BATCH / "batch.lock"
 RECORDS = BATCH / "records"
 MAX_FILES = 5
+EXCLUDED_INPUT_FILES = {"vacancies.txt"}
 VENV_DIR = ROOT / ".venv"
 REQUIREMENTS = ROOT / "requirements.txt"
 
@@ -148,7 +149,7 @@ def prepare() -> None:
     RECORDS.mkdir(parents=True, exist_ok=True)
 
     files = sorted(
-        (p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() == ".txt"),
+        (p for p in INBOX.iterdir() if p.is_file() and p.suffix.lower() == ".txt" and p.name.casefold() not in EXCLUDED_INPUT_FILES),
         key=lambda p: p.name.casefold(),
     )
     selected = files[:MAX_FILES]
