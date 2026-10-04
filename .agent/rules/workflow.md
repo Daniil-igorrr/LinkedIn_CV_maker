@@ -8,7 +8,7 @@ If the user asks to process everything in `inbox/`, the agent MUST use the deter
 
 Start:
 ```bash
-python scripts/batch_controller.py prepare
+python .venv\Scripts\python.exe scripts/batch_controller.py prepare
 ```
 
 The controller:
@@ -20,7 +20,7 @@ The controller:
 
 Before each job, obtain the current filename:
 ```bash
-python scripts/batch_controller.py current
+python .venv\Scripts\python.exe scripts/batch_controller.py current
 ```
 
 ### Job isolation
@@ -42,11 +42,11 @@ Do NOT:
 
 The agent may create the current job's outputs and one temporary execution record under `.batch/records/`. It may update `output/applications_tracker.md` when required by `.agent/rules/correspondence.md`.
 
-The official PDF pipeline is scripts/generate_pdfs.py. Run it for every PROCEED job after creating the Markdown CV and Cover Letter. It writes A4 PDFs beside the Markdown sources and verifies the actual page count with pypdf. Dependencies are declared in requirements.txt and must be installed outside job processing. If the generator or its dependencies are missing, STOP; do not create a replacement, install packages, or invent another PDF pipeline.
+The official PDF pipeline is scripts/generate_pdfs.py. On the Windows/Antigravity environment, run it ONLY with `.venv\Scripts\python.exe scripts/generate_pdfs.py`. The batch controller MUST also be invoked through `.venv\Scripts\python.exe`. Never use the global `python` interpreter for project execution. Run the PDF pipeline for every PROCEED job after creating the Markdown CV and Cover Letter. It writes A4 PDFs beside the Markdown sources and verifies the actual page count with pypdf. Dependencies are declared in requirements.txt and must be installed outside job processing. If the generator or its dependencies are missing, STOP; do not create a replacement, install packages, or invent another PDF pipeline.
 
 After the current job is finished:
 ```bash
-python scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
+python .venv\Scripts\python.exe scripts/batch_controller.py complete "<CURRENT_JOB>" ".batch/records/<record>.record.md"
 ```
 
 If `complete` returns **any error**, **STOP immediately**. Do not attempt to repair the filesystem, remove an existing destination, move the source manually, rerun with another filename, or otherwise bypass the controller. Report the exact error and wait for recovery instructions.
