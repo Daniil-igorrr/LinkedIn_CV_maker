@@ -606,3 +606,211 @@
 - Output files: none (skipped)
 - Gap Report items: none
 
+## 2026-10-04 13:11 — Movate — Lead Generation Executive
+- Source file: inbox/processed/06_Company_logo_for_Movate.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: B2C requirement: "Make outbound calls to existing military customers and their families on behalf of one of the nation’s largest insurance providers." Candidate exclusively performs B2B sales and lead generation, no B2C.
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:11 — Benchmark Ledger Solutions — B2B Sales Consultant
+- Source file: inbox/processed/07_Company_logo_for_Benchmark_Ledger_Solutions.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Compensation structure is commission-only: "This role is commission-based... actual compensation depends on the sales volume... No additional benefits are offered." No base salary is mentioned.
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:11 — MMC Group LP — Sales Development Representative (SDR/BDR)
+- Source file: inbox/processed/08_Company_logo_for_MMC_Group_LP.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Location requirement: "candidates must live in the Austin area and be available for occasional in-person training and team sessions." Candidate is based in Spain.
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:12 — Hub Nexus — Sales And Marketing Specialist
+- Source file: inbox/processed/09_Company_logo_for_Hub_Nexus.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Compensation structure is commission-only: "Pay is based on comissions only".
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:12 — City Wide Facility Solutions — Business Development Specialist
+- Source file: inbox/processed/10_Company_logo_for_City_Wide_Facility_Solutions.txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/City_Wide_Facility_Solutions_Business_Development_Specialist_CV.md, output/City_Wide_Facility_Solutions_Business_Development_Specialist_CoverLetter.md
+- Gap Report items: none
+
+## 2026-10-04 13:41 — Roberts Growth Marketing — Campus Growth Marketing Representative
+- Source file: inbox/processed/11_Company_logo_for_Roberts_Growth_Marketing.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Compensation structure is commission-only: "Pay: Commission Only", "This is a 100% commission-based role with uncapped earnings."
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:42 — 8x8 — Sales Development Representative
+- Source file: inbox/processed/12_Company_logo_for_8x8.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Geographic requirement: "base pay across the U.S. for this role; the applicable base pay range will depend on what ultimately is determined to be the candidate’s primary work location." The role is restricted to the US. Candidate is based in Spain and lacks US work authorization.
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 13:42 — Silicon Valley Construction Services — Commercial Leasing Representative – Remote
+- Source file: inbox/processed/13_Company_logo_for_Silicon_Valley_Construction_Servi.txt
+- Domain-fit-gate verdict: SKIP
+  - Reasoning: Compensation structure is commission-only: "Commission-based — $400–$1,200 per successfully closed lease", "Commission-based compensation of $400–$1,200 for each successfully closed lease".
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: N/A (skipped)
+  - Metrics Check: N/A (skipped)
+  - Tools Check: N/A (skipped)
+  - Role Title Check: N/A (skipped)
+  - Missing Skills Check: N/A (skipped)
+  - Domain Expertise Check: N/A (skipped)
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = N/A (skipped), Cover Letter = N/A (skipped)
+- Output files: none (skipped)
+- Gap Report items: none
+
+## 2026-10-04 14:05 — Pilatus — SDR - Sales Development Representative
+- Source file: inbox/processed/01_Pilatus_SDR - Sales Development Representative.txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/Pilatus_SDR_CV.md, output/Pilatus_SDR_CoverLetter.md
+- Gap Report items: Candidate has ~1.3 years of SDR experience rather than the requested strict minimum of 2 years.
+
+## 2026-10-04 14:06 — CentralApp — Business Developer
+- Source file: inbox/processed/02_CentralApp_Business Developer - Spain - Portugal Restaurants - Hotels (Remote).txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/CentralApp_Business_Developer_CV.md, output/CentralApp_Business_Developer_CoverLetter.md
+- Gap Report items: Candidate is fluent rather than "Native" in Spanish. Candidate lacks hospitality industry experience.
+
+## 2026-10-04 14:07 — Bitdefender — Sales Development Representative-Spain
+- Source file: inbox/processed/03_Bitdefender_Sales Development Representative-Spain.txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/Bitdefender_SDR_CV.md, output/Bitdefender_SDR_CoverLetter.md
+- Gap Report items: none
+
+## 2026-10-04 14:07 — WIN SOURCE — Sales Specialist
+- Source file: inbox/processed/04_WIN SOURCE_Sales Specialist.txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/WIN_SOURCE_Sales_Specialist_CV.md, output/WIN_SOURCE_Sales_Specialist_CoverLetter.md
+- Gap Report items: none
+
+## 2026-10-04 14:09 — Revolut — New Business Account Executive (Spanish Speaking)
+- Source file: inbox/processed/05_Revolut_New Business Account Executive (Spanish Speaking).txt
+- Domain-fit-gate verdict: PROCEED
+  - Reasoning: no blockers found
+- Anti-hallucination self-check (Section 5 checklist):
+  - Line Check: PASS
+  - Metrics Check: PASS
+  - Tools Check: PASS
+  - Role Title Check: PASS
+  - Missing Skills Check: PASS
+  - Domain Expertise Check: PASS
+- PDF page count (from actual pdfinfo/pypdf output, not an assumption):
+  CV = 1, Cover Letter = 1
+- Output files: output/Revolut_Account_Executive_CV.md, output/Revolut_Account_Executive_CoverLetter.md
+- Gap Report items: Candidate is pursuing a degree in Multimedia Engineering rather than the "nice to have" finance or business-related subject.
+
