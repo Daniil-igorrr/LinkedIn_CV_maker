@@ -43,3 +43,13 @@ Thumbs.db
 # Runtime state for the deterministic batch controller
 .batch/*
 !.batch/.gitkeep
+
+# Generated application materials
+output/*
+!output/applications_tracker.md
+!output/execution_log.md
+!output/.gitkeep
+
+# Scratch
+scratch/
+
